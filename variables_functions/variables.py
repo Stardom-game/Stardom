@@ -13,6 +13,8 @@ screen_width = 1500
 screen_height = 750
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 space = pymunk.Space()
+space_trajectory = pymunk.Space()
+trajectory = []
 white = (255, 255, 255)
 black = (0, 0, 0)
 gray = (127, 127, 127)
@@ -30,6 +32,8 @@ building_uis = []
 trailPoints = []
 
 current_accel = (0,0)
+current_orbit_frame = 0
+orbit_path = []
 
 physics_speed = 1
 
@@ -86,6 +90,7 @@ exit = False
 
 
 space.gravity = (0, 0)
+space_trajectory.gravity = (0,0)
 
 draw_options = pymunk.pygame_util.DrawOptions(screen)
 clock = pygame.time.Clock()

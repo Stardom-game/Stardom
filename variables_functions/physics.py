@@ -3,9 +3,12 @@ import pygame, time
 import pymunk
 import pymunk.pygame_util
 import math, random, os, json, keyboard
+
+from pymunk.pygame_util import DrawOptions
+
 from variables_functions import variables
 from variables_functions.variables import blocks, mouseX, mouseY, physics_loading, selected_obj, trailPoints, \
-    physics_speed, current_accel
+    physics_speed, current_accel, trajectory, space_trajectory
 
 
 def ballistics(current_altitude, velocity, angle, acceleration):
@@ -16,14 +19,17 @@ def angle_of_vector(x, y):
     return math.degrees(math.atan2(-y,x))  # https://stackoverflow.com/questions/42258637/how-to-know-the-angle-between-two-vectors/64563327#64563327
 
 
-def draw(space, screen, draw_options):
+def draw(draw_options):
     #variables.screen.fill("black")
-    variables.space.debug_draw(draw_options)
+    variables.space_trajectory.debug_draw(draw_options)
 
 
-def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circle=False):
-    body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
-
+def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circle=False, kinematic = False):
+    body=None
+    if not kinematic:
+        body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
+    else:
+        body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
     body.position = (x, y)
     shape = None
     if not circle:
@@ -36,7 +42,7 @@ def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circl
     shape.color = (255, 0, 0, 100)
     shape.body.angle = rotation
     shape.body.center_of_gravity = (width/2, height/2)
-    variables.space.add(body, shape)
+    space.add(body, shape)
 
     return shape
 def create_block(image, x, y, width, height, mass, elasticity, rotation=0, override_id=-1):
@@ -126,31 +132,61 @@ def move_selected(mode, obj):
         # pymunk.Body.apply_impulse_at_world_point(obj, (0,-250), (obj.position.x, obj.position.y-100))
 
         # pymunk.Body.apply_impulse_at_world_point(obj, (250,0), (obj.position.x+100, obj.position.y))
+        variables.trajectory = simulate_bodies(obj.position, 10, obj.velocity, )
     if mode == "down":
         # obj.apply_impulse_at_local_point((0,1000))
         obj.apply_impulse_at_local_point((0, 200), variables.force_offset)
 
         # pymunk.Body.apply_impulse_at_world_point(obj, (-250,0), (obj.position.x-100, obj.position.y))
 
-def apply_grav_accel(obj):
+def apply_grav_accel(obj, kinematic = False):
     planet = None
     for _planet in variables.planets.values():
         planet = _planet.body
         break
+    dt_use = variables.dt
+    force_multiplier = 1
     #grav_a = 1 * 10**5 * grav_accel(150, math.hypot(abs(obj.position.x-planet.position.x), abs(obj.position.y-planet.position.y)))
     distance_vector = ((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
     distance = math.hypot((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
-    grav_a = variables.dt * ((6.6743015 * 10**-11) * 5000000000000000000 / (distance ** 2))
+    grav_a = dt_use * ((6.6743015 * 10**-11) * 5000000000000000000 / (distance ** 2))
     grav_a_angle = math.atan2(distance_vector[1], distance_vector[0])
 
     grav_a_vector = (grav_a * math.cos(grav_a_angle), grav_a * math.sin(grav_a_angle))
     variables.current_accel = grav_a_vector[0], grav_a_vector[1]
     #grav_a_vector = (grav_a * (obj.position.x - planet.position.x), grav_a * (obj.position.y - planet.position.y))
     #pymunk.Body.apply_force_at_world_point(obj, (grav_a_vector[0], grav_a_vector[1]), obj.position)
-    obj.apply_force_at_local_point((variables.current_accel[0], variables.current_accel[1]))
+    if not kinematic:
+        obj.apply_force_at_local_point((variables.current_accel[0] * force_multiplier, variables.current_accel[1] * force_multiplier))
+    else:
+        obj.velocity += (variables.current_accel[0] * 0.000105, variables.current_accel[1] * 0.000105)
     #pymunk.Body.update_velocity(obj, grav_a_vector, 1, 1/variables.physics_speed)
+
+def simulate_bodies(pos1, mass1, vel1):
+    body1 = create_box(variables.space_trajectory, pos1[0], pos1[1], 16, 16, mass1, 0, True, True, True)
+    #body2 = create_box(variables.space_trajectory, pos2[0], pos2[1], 5, 5, 20, 0, True, True)
+    body1.body.velocity = (vel1[0], vel1[1])
+
+    update_trajectory_sim()
+    positions = []
+    for _ in range(1000):
+        apply_grav_accel(body1.body, True)
+
+        #body1.body.velocity = (0,5)
+        variables.screen.blit(variables.images["stone"], (body1.body.position[0], body1.body.position[1]))
+        positions.append(body1.body.position)
+        update_trajectory_sim()
+
+    return positions
+
+def update_trajectory_sim():
+    callAmount2 = 4
+    for _ in range(callAmount2):
+        variables.space_trajectory.step(1/15/4)
+
+
 def update(physics_speed):
-    callAmount = 16
+    callAmount = 64
     for _ in range(callAmount):
         variables.space.step((1 / variables.fps * physics_speed) / callAmount)
 
@@ -193,6 +229,8 @@ def lerp_angular_velocity():
             variables.trailPoints.pop(0)
         if len(trailPoints) > 2:
             pygame.draw.lines(variables.screen, variables.white, False, trailPoints, 5)
+        if len(variables.trajectory) > 2:
+            pygame.draw.lines(variables.screen, variables.white, False, variables.trajectory, 5)
         apply_grav_accel(selected_obj.body)
         variables.selected_obj = selected_obj
 
