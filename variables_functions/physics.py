@@ -5,7 +5,7 @@ import pymunk.pygame_util
 import math, random, os, json, keyboard
 from variables_functions import variables
 from variables_functions.variables import blocks, mouseX, mouseY, physics_loading, selected_obj, trailPoints, \
-    physics_speed
+    physics_speed, current_accel
 
 
 def ballistics(current_altitude, velocity, angle, acceleration):
@@ -35,6 +35,7 @@ def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circl
     shape.friction = 2
     shape.color = (255, 0, 0, 100)
     shape.body.angle = rotation
+    shape.body.center_of_gravity = (width/2, height/2)
     variables.space.add(body, shape)
 
     return shape
@@ -121,13 +122,13 @@ def move_selected(mode, obj):
     if mode == "left":
         obj.torque = -1500
     if mode == "up":
-        obj.apply_impulse_at_local_point((0, -2), variables.force_offset)
+        obj.apply_impulse_at_local_point((0, -200), variables.force_offset)
         # pymunk.Body.apply_impulse_at_world_point(obj, (0,-250), (obj.position.x, obj.position.y-100))
 
         # pymunk.Body.apply_impulse_at_world_point(obj, (250,0), (obj.position.x+100, obj.position.y))
     if mode == "down":
         # obj.apply_impulse_at_local_point((0,1000))
-        obj.apply_impulse_at_local_point((0, 2), variables.force_offset)
+        obj.apply_impulse_at_local_point((0, 200), variables.force_offset)
 
         # pymunk.Body.apply_impulse_at_world_point(obj, (-250,0), (obj.position.x-100, obj.position.y))
 
@@ -137,14 +138,23 @@ def apply_grav_accel(obj):
         planet = _planet.body
         break
     #grav_a = 1 * 10**5 * grav_accel(150, math.hypot(abs(obj.position.x-planet.position.x), abs(obj.position.y-planet.position.y)))
-    grav_a = 0.02
-    pymunk.Body.apply_force_at_world_point(obj, (grav_a*(planet.position.x - obj.position.x),grav_a*(planet.position.y - obj.position.y)), planet.position)
+    distance_vector = ((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
+    distance = math.hypot((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
+    grav_a = variables.dt * ((6.6743015 * 10**-11) * 5000000000000000000 / (distance ** 2))
+    grav_a_angle = math.atan2(distance_vector[1], distance_vector[0])
+
+    grav_a_vector = (grav_a * math.cos(grav_a_angle), grav_a * math.sin(grav_a_angle))
+    variables.current_accel = grav_a_vector[0], grav_a_vector[1]
+    #grav_a_vector = (grav_a * (obj.position.x - planet.position.x), grav_a * (obj.position.y - planet.position.y))
+    #pymunk.Body.apply_force_at_world_point(obj, (grav_a_vector[0], grav_a_vector[1]), obj.position)
+    obj.apply_force_at_local_point((variables.current_accel[0], variables.current_accel[1]))
+    #pymunk.Body.update_velocity(obj, grav_a_vector, 1, 1/variables.physics_speed)
 def update(physics_speed):
     callAmount = 16
     for _ in range(callAmount):
         variables.space.step((1 / variables.fps * physics_speed) / callAmount)
 
-    variables.clock.tick(variables.fps)
+    variables.dt = variables.clock.tick(variables.fps)
     pygame.display.update()
 
 def update_cooldown():
@@ -172,14 +182,14 @@ def update_movement():
         move_selected("right", variables.blocks[str(variables.selected_index)][1].body)
     if variables.keys[pygame.K_9]:
         print("tab")
-        variables.physics_speed = 400
+        variables.physics_speed = 2000
 
 def lerp_angular_velocity():
     if variables.blocks!= {}:
 
         selected_obj = variables.blocks[str(variables.selected_index)][1]
         variables.trailPoints.append(selected_obj.body.position)
-        if len(variables.trailPoints) > 500:
+        if len(variables.trailPoints) > 1000:
             variables.trailPoints.pop(0)
         if len(trailPoints) > 2:
             pygame.draw.lines(variables.screen, variables.white, False, trailPoints, 5)

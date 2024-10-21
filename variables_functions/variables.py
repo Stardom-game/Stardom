@@ -7,7 +7,7 @@ import json
 #from pymunk.examples.arrows import height
 
 MODE = "main_menu"
-
+dt = 0
 keys = None
 screen_width = 1500
 screen_height = 750
@@ -29,7 +29,9 @@ buttons = []
 building_uis = []
 trailPoints = []
 
-physics_speed = 50
+current_accel = (0,0)
+
+physics_speed = 1
 
 DEFAULT_IMAGE_SIZE = (screen.get_width(), screen.get_height())
 running = True
