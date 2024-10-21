@@ -13,8 +13,6 @@ screen_width = 1500
 screen_height = 750
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 space = pymunk.Space()
-space_trajectory = pymunk.Space()
-trajectory = []
 white = (255, 255, 255)
 black = (0, 0, 0)
 gray = (127, 127, 127)
@@ -32,8 +30,6 @@ building_uis = []
 trailPoints = []
 
 current_accel = (0,0)
-current_orbit_frame = 0
-orbit_path = []
 
 physics_speed = 1
 
@@ -60,7 +56,9 @@ images = {
     "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
     "commandpodbutton": pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(),
     "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandmodule.png")).convert_alpha(), (128,128)),
-    "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (128,128))
+    "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (128,128)),
+    "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (128,128)),
+    "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height))
 }
 blank = pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha()
 mouseX, mouseY = pygame.mouse.get_pos()
@@ -90,7 +88,6 @@ exit = False
 
 
 space.gravity = (0, 0)
-space_trajectory.gravity = (0,0)
 
 draw_options = pymunk.pygame_util.DrawOptions(screen)
 clock = pygame.time.Clock()
