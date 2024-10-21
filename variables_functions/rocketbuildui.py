@@ -9,16 +9,20 @@ from variables_functions import ui_elements
 
 ##--BUILDING FUNCTIONS--##
 parts = []
+if len(parts) == 0:
+    a = 50
+else:
+    a = 0
 def make_commandpod():
-    parts.append(["commandpodussr", variables.screen_width/2, 0+variables.numofparts*128])
+    parts.append(["commandpodussr", variables.screen_width/2, a+variables.numofparts*128])
     variables.numofparts += 1
 
 def make_fueltank():
-    parts.append(["fueltankru", variables.screen_width/2, 0+variables.numofparts*128])
+    parts.append(["fueltankru", variables.screen_width/2, a+variables.numofparts*128])
     variables.numofparts += 1
 
 def make_engine1():
-    parts.append(["engine1", variables.screen_width/2, 0+variables.numofparts*128])
+    parts.append(["engine1", variables.screen_width/2, a+variables.numofparts*128])
     variables.numofparts += 1
         
         
