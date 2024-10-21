@@ -55,9 +55,10 @@ images = {
     "planet": pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(),
     "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
     "commandpodbutton": pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(),
-    "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandmodule.png")).convert_alpha(), (128,128))
+    "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandmodule.png")).convert_alpha(), (128,128)),
+    "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (128,128))
 }
-
+blank = pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha()
 mouseX, mouseY = pygame.mouse.get_pos()
 mousePos = pygame.mouse.get_pos()
 mouseRect = pygame.rect.Rect((0,0), (1, 1))
