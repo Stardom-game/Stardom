@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="5c94b8a2-03d0-404f-b450-b995686ee247" name="Changes" comment="Added ballistics">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/variables_functions/physics.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/physics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/variables.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,7 +189,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729539647446</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Added ballistics">
+      <option name="closed" value="true" />
+      <created>1729542535276</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1729542535276</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

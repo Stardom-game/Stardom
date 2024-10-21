@@ -26,6 +26,7 @@ while variables.running:
         physics.create_parts()
         planets.update()
         physics.update_screen()
-
+    if variables.to_follow != None:
+        variables.screen.blit(variables.images["wood"], (variables.to_follow[0], variables.to_follow[1]))
 
     pygame.display.update()
