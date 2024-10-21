@@ -77,6 +77,5 @@ def change_mode(new_mode):
                                "build", variables.images["blank"], "startbuild_button", build_action, False, True, variables.white))
 
     if variables.MODE == "building":
-        bgimg = pygame.transform.scale(pygame.image.load(os.path.join(variables.root_dir, "images", "buildbg.png")).convert_alpha(), (variables.screen_width, variables.screen_height))
-        variables.screen.blit(bgimg, (0,0))
+
         rocketbuildui.build_ui()

@@ -10,12 +10,15 @@ from pygame.locals import *
 ui.setup()
 while variables.running:
     variables.screen.fill(variables.black)
+    if variables.MODE == "building":
+        rocketbuildui.update()
     ui.update()
     ui.close()
     ui.update_buttons()
     ui.update_mouse()
     ui.update_keys()
     planets.setup()
+
     if variables.MODE == "simulation":
         physics.update_cooldown()
         physics.update_movement()
@@ -23,7 +26,6 @@ while variables.running:
         physics.create_parts()
         planets.update()
         physics.update_screen()
-    if variables.MODE == "building":
-        rocketbuildui.update()
+
 
     pygame.display.update()
