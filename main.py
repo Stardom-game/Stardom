@@ -27,7 +27,3 @@ while variables.running:
         rocketbuildui.update()
 
     pygame.display.update()
-    #
-
-    #pygame.display.update()
-    #this is a test

@@ -9,13 +9,22 @@ from variables_functions import ui_elements
 
 ##--BUILDING FUNCTIONS--##
 parts = []
+if len(parts) == 0:
+    a = 50
+else:
+    a = 0
 def make_commandpod():
-    parts.append(["commandpodussr", variables.screen_width/2, 0+variables.numofparts*128])
+    parts.append(["commandpodussr", variables.screen_width/2, a+variables.numofparts*128])
     variables.numofparts += 1
 
 def make_fueltank():
-    parts.append(["fueltankru", variables.screen_width/2, 0+variables.numofparts*128])
+    parts.append(["fueltankru", variables.screen_width/2, a+variables.numofparts*128])
     variables.numofparts += 1
+
+def make_engine1():
+    parts.append(["engine1", variables.screen_width/2, a+variables.numofparts*128])
+    variables.numofparts += 1
+        
         
         
 ##--CLASS BUILDUI--##
@@ -32,13 +41,17 @@ def make_fueltank():
 #                           hide_fill=True, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5)
 
 def build_ui():
-    variables.buttons.append(ui_elements.Button(variables.screen, 20, 20, 100, 50,
+    variables.buttons.append(ui_elements.Button(variables.screen, 20, 20, 100, 75,
                            variables.white, variables.black, "consolas", 15, 20, "Make Command Module",
                            variables.blank, "summon command module", make_commandpod,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
-    variables.buttons.append(ui_elements.Button(variables.screen, 20, 140, 100, 50,
+    variables.buttons.append(ui_elements.Button(variables.screen, 20, 140, 100, 75,
                            variables.white, variables.black, "consolas", 15, 20, "Make Fuel Tank",
                            variables.blank, "summon fuel tank", make_fueltank,
+                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
+    variables.buttons.append(ui_elements.Button(variables.screen, 20, 260, 100, 75,
+                           variables.white, variables.black, "consolas", 15, 20, "Make Engine",
+                           variables.blank, "summon engine1", make_engine1,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
 
 def update():
