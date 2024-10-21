@@ -4,11 +4,12 @@ import pymunk
 import pymunk.pygame_util
 import math, random, os, json, keyboard
 
+from pygame import Vector2
 from pymunk.pygame_util import DrawOptions
 
 from variables_functions import variables
 from variables_functions.variables import blocks, mouseX, mouseY, physics_loading, selected_obj, trailPoints, \
-    physics_speed, current_accel, trajectory, space_trajectory
+    physics_speed, current_accel, trajectory, space_trajectory, orbit_direction
 
 
 def ballistics(current_altitude, velocity, angle, acceleration):
@@ -25,7 +26,7 @@ def closest_point(pos, arr):
     out_index = -1
     dis = 999
     for point in arr:
-        if distance(pos, point) < dis:
+        if abs(distance(pos, point)) < dis:
             out_index = i
         i += 1
     return out_index
@@ -56,7 +57,7 @@ def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circl
 
     return shape
 def create_block(image, x, y, width, height, mass, elasticity, rotation=0, override_id=-1):
-    newBlock = create_box(variables.space, x, y, width, height, mass, elasticity, rotation)
+    newBlock = create_box(variables.space, x, y, width, height, mass, elasticity, rotation, False, False)
 
     newBlockRect = pygame.rect.Rect((0, 0), (width, height))
     newBlockRect.x, newBlockRect.y = x, y
@@ -130,7 +131,6 @@ def update_rot(data):
             rect.centerx, rect.centery = math.floor(block.body.position.x), math.floor(
                 block.body.position.y)  # Match rect position to body position
             variables.screen.blit(blockRotated, rect)
-
 def move_selected(mode, obj):
     obj.torque = 0
     if mode == "right":
@@ -138,9 +138,9 @@ def move_selected(mode, obj):
     if mode == "left":
         obj.torque = -1500
     if mode == "up":
-        obj.apply_impulse_at_local_point((0, -200), variables.force_offset)
+        obj.velocity += (0,-5)
     if mode == "down":
-        obj.apply_impulse_at_local_point((0, 200), variables.force_offset)
+        obj.velocity += (0,5)
     if len(variables.blocks.keys()) > 0:
         obj = variables.blocks[str(variables.selected_index)][1]
         variables.trajectory = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity)
@@ -168,33 +168,43 @@ def apply_grav_accel(obj, kinematic = False):
         obj.velocity += (variables.current_accel[0] * 0.000105, variables.current_accel[1] * 0.000105)
     #pymunk.Body.update_velocity(obj, grav_a_vector, 1, 1/variables.physics_speed)
 def match_grav_accel(obj):
-    variables.current_traj_follow = closest_point(obj.body.position, variables.trajectory)
+    #variables.current_traj_follow = closest_point(obj.body.position, variables.trajectory)
+    dis = 0
+    if variables.to_follow != None:
+        dis = abs(distance(variables.to_follow, obj.body.position))
+        if angle_of_vector(obj.body.velocity[0], obj.body.velocity[1]) > 5 and dis < 70:
+            vel_target = (variables.to_follow-obj.body.position) * dis
+            obj.body.velocity = obj.body.velocity + (vel_target - obj.body.velocity) * 0.05
+            obj.body.velocity = vel_target
+        else:
+            apply_grav_accel(obj.body, True)
+
     if variables.current_traj_follow+1 < len(variables.trajectory):
+        variables.to_follow = variables.trajectory[int(variables.current_traj_follow)][0], variables.trajectory[int(variables.current_traj_follow)][1]
 
-        obj.body.apply_force_at_local_point(
-            (variables.trajectory[int(variables.current_traj_follow)+1][0] *140, variables.trajectory[int(variables.current_traj_follow)+1][1] * 140))
-        distance = math.atan2(obj.body.position.y - variables.trajectory[int(variables.current_traj_follow)][1],
-                              obj.body.position.x - variables.trajectory[int(variables.current_traj_follow)][0])
 
-        print(variables.current_traj_follow)
+        if dis < 50:
+            variables.current_traj_follow += 1
+
     else:
-        variables.trajectory = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity)
+        variables.current_traj_follow = 0
+        #variables.trajectory = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity)
 
 
 def simulate_bodies(pos1, mass1, vel1):
+
     body1 = create_box(variables.space_trajectory, pos1[0], pos1[1], 16, 16, mass1, 0, True, True, True)
     #body2 = create_box(variables.space_trajectory, pos2[0], pos2[1], 5, 5, 20, 0, True, True)
     body1.body.velocity = (vel1[0], vel1[1])
-
     update_trajectory_sim()
     positions = []
-    for _ in range(500):
+    for _ in range(750):
         apply_grav_accel(body1.body, True)
 
         #body1.body.velocity = (0,5)
-        #variables.screen.blit(variables.images["stone"], (body1.body.position[0], body1.body.position[1]))
+        #
         positions.append(body1.body.position)
-        if len(positions) > 10 and (distance(body1.body.position, positions[0]) < 2):
+        if len(positions) > 10 and abs(distance(body1.body.position, positions[0]) < 5):
             break
         update_trajectory_sim()
 

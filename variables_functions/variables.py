@@ -32,8 +32,10 @@ trailPoints = []
 trajectory = []
 
 current_traj_follow = 0
+to_follow = None
 
 current_accel = (0,0)
+orbit_direction = 1
 
 physics_speed = 1
 
