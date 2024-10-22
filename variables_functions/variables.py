@@ -30,8 +30,10 @@ buttons = []
 building_uis = []
 trailPoints = []
 trajectory = []
+trajectory_velocities =[]
 
 current_traj_follow = 0
+last_current_traj_follow = 0
 to_follow = None
 
 current_accel = (0,0)
@@ -104,6 +106,10 @@ selected_index = 0
 selected_obj = None
 
 force_offset = (0,0)
+
+orbit_starting_point = (0,0)
+orbit_correct_velocity = 0
+orbit_should_correct = False
 
 leftclick, middleclick, rightclick = False, False, False
 tab_pressed = False

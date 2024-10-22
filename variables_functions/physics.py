@@ -2,14 +2,15 @@
 import pygame, time
 import pymunk
 import pymunk.pygame_util
-import math, random, os, json, keyboard
+import math, random, os, json, keyboard, clock
 
 from pygame import Vector2
 from pymunk.pygame_util import DrawOptions
 
 from variables_functions import variables
 from variables_functions.variables import blocks, mouseX, mouseY, physics_loading, selected_obj, trailPoints, \
-    physics_speed, current_accel, trajectory, space_trajectory, orbit_direction
+    physics_speed, current_accel, trajectory, space_trajectory, orbit_direction, orbit_starting_point, \
+    orbit_correct_velocity, last_current_traj_follow
 
 
 def ballistics(current_altitude, velocity, angle, acceleration):
@@ -28,8 +29,10 @@ def closest_point(pos, arr):
     for point in arr:
         if abs(distance(pos, point)) < dis:
             out_index = i
+            dis = abs(distance(pos, point))
         i += 1
     return out_index
+
 def draw(draw_options):
     #variables.screen.fill("black")
     variables.space_trajectory.debug_draw(draw_options)
@@ -143,19 +146,22 @@ def move_selected(mode, obj):
         obj.velocity += (0,5)
     if len(variables.blocks.keys()) > 0:
         obj = variables.blocks[str(variables.selected_index)][1]
-        variables.trajectory = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity)
-def apply_grav_accel(obj, kinematic = False):
+        variables.orbit_starting_point = obj.body.position
+        variables.orbit_correct_velocity = obj.body.velocity
+        variables.trajectory, variables.trajectory_velocities = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity)
+        variables.orbit_should_correct = False
+def apply_grav_accel(obj, kinematic = False, give_vel = False):
 
     planet = None
     for _planet in variables.planets.values():
         planet = _planet.body
         break
-    dt_use = variables.dt
+    dt_use = (1/variables.fps)
     force_multiplier = 1
     #grav_a = 1 * 10**5 * grav_accel(150, math.hypot(abs(obj.position.x-planet.position.x), abs(obj.position.y-planet.position.y)))
     distance_vector = ((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
-    distance = math.hypot((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
-    grav_a = dt_use * ((6.6743015 * 10**-11) * 5000000000000000000 / (distance ** 2))
+    distance_ = math.hypot((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
+    grav_a = dt_use * ((6.6743015 * 10**-11) * 5000000000000000000 / (distance_ ** 2))
     grav_a_angle = math.atan2(distance_vector[1], distance_vector[0])
 
     grav_a_vector = (grav_a * math.cos(grav_a_angle), grav_a * math.sin(grav_a_angle))
@@ -163,63 +169,74 @@ def apply_grav_accel(obj, kinematic = False):
     #grav_a_vector = (grav_a * (obj.position.x - planet.position.x), grav_a * (obj.position.y - planet.position.y))
     #pymunk.Body.apply_force_at_world_point(obj, (grav_a_vector[0], grav_a_vector[1]), obj.position)
     if not kinematic:
-        obj.apply_force_at_local_point((variables.current_accel[0] * force_multiplier, variables.current_accel[1] * force_multiplier))
+        obj.apply_force_at_local_point((variables.current_accel[0] * dt_use * 60, variables.current_accel[1] * dt_use * 60))
     else:
-        obj.velocity += (variables.current_accel[0] * 0.000105, variables.current_accel[1] * 0.000105)
+        obj.velocity += (variables.current_accel[0] * 0.105* variables.physics_speed, variables.current_accel[1] * 0.105 * variables.physics_speed)
+
     #pymunk.Body.update_velocity(obj, grav_a_vector, 1, 1/variables.physics_speed)
 def match_grav_accel(obj):
     #variables.current_traj_follow = closest_point(obj.body.position, variables.trajectory)
-    dis = 0
-    if variables.to_follow != None:
-        dis = abs(distance(variables.to_follow, obj.body.position))
-        if angle_of_vector(obj.body.velocity[0], obj.body.velocity[1]) > 5 and dis < 70:
-            vel_target = (variables.to_follow-obj.body.position) * dis
-            obj.body.velocity = obj.body.velocity + (vel_target - obj.body.velocity) * 0.05
-            obj.body.velocity = vel_target
+
+    if variables.physics_speed <= 1:
+        if variables.orbit_should_correct and distance(variables.orbit_starting_point, obj.body.position) < 25:
+            obj.body.position = variables.orbit_starting_point
+            obj.body.velocity = variables.orbit_correct_velocity
+            variables.orbit_should_correct = False
+            print("correcting orbit")
+        if distance(variables.orbit_starting_point, obj.body.position) > 150:
+            variables.orbit_should_correct = True
+        apply_grav_accel(obj.body, True)
+
+    #print(distance(variables.orbit_starting_point, obj.body.position))
+
+    if variables.physics_speed > 1:
+        if variables.to_follow != None:
+            #Change this first one to the apoapsis > x
+            obj.body.position = variables.to_follow
+
+        if variables.current_traj_follow + 1 < len(variables.trajectory):
+            variables.to_follow = variables.trajectory[int(variables.current_traj_follow)][0], \
+            variables.trajectory[int(variables.current_traj_follow)][1]
+
+            variables.current_traj_follow += variables.physics_speed
+            variables.last_current_traj_follow = variables.current_traj_follow
+
         else:
-            apply_grav_accel(obj.body, True)
-
-    if variables.current_traj_follow+1 < len(variables.trajectory):
-        variables.to_follow = variables.trajectory[int(variables.current_traj_follow)][0], variables.trajectory[int(variables.current_traj_follow)][1]
-
-
-        if dis < 50:
-            variables.current_traj_follow += 1
-
-    else:
-        variables.current_traj_follow = 0
-        #variables.trajectory = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity)
+            variables.current_traj_follow = 0
 
 
 def simulate_bodies(pos1, mass1, vel1):
 
-    body1 = create_box(variables.space_trajectory, pos1[0], pos1[1], 16, 16, mass1, 0, True, True, True)
+    body1 = create_box(variables.space_trajectory, pos1[0], pos1[1], 16, 16, 10, 0, False, False, False)
     #body2 = create_box(variables.space_trajectory, pos2[0], pos2[1], 5, 5, 20, 0, True, True)
-    body1.body.velocity = (vel1[0], vel1[1])
-    update_trajectory_sim()
-    positions = []
-    for _ in range(750):
-        apply_grav_accel(body1.body, True)
+    body1.body.velocity = variables.selected_obj.body.velocity
 
+    positions = []
+    velocities = []
+    for _ in range(1500):
+        apply_grav_accel(body1.body, True)
         #body1.body.velocity = (0,5)
-        #
         positions.append(body1.body.position)
-        if len(positions) > 10 and abs(distance(body1.body.position, positions[0]) < 5):
+        velocities.append(body1.body.velocity)
+        if len(positions) > 5 and abs(distance(body1.body.position, positions[0]) < 5):
             break
         update_trajectory_sim()
 
-    return positions
+    return positions, velocities
 
 def update_trajectory_sim():
     variables.space_trajectory.step(1/60)
 
 
 def update(physics_speed):
-    callAmount = 64
+    callAmount = 2
     for _ in range(callAmount):
         variables.space.step((1 / variables.fps * physics_speed) / callAmount)
 
-    variables.dt = variables.clock.tick(variables.fps)
+    variables.clock.tick(variables.fps)
+    variables.dt = variables.clock.get_fps()
+    #if variables.clock.get_fps() > 0:
+      #  print(1/variables.clock.get_fps())
     pygame.display.update()
 
 def update_cooldown():
@@ -228,37 +245,44 @@ def update_cooldown():
     # draw(space, screen, draw_options)
     variables.newBlockCooldown += 1
 def update_movement():
+    if str(variables.selected_index) in variables.blocks:
+        obj = variables.blocks[str(variables.selected_index)][1]
+        if variables.keys[pygame.K_TAB]:
+            if variables.tab_pressed == False:
 
-    if variables.keys[pygame.K_TAB]:
-        if variables.tab_pressed == False:
-
-            variables.tab_pressed = True
-            variables.selected_index += 1
-            if variables.selected_index == len(variables.blocks.keys()):
-                variables.selected_index = 0
-    else:
-        variables.tab_pressed = False
-    if variables.keys[pygame.K_w]:
-        move_selected("up", variables.blocks[str(variables.selected_index)][1].body)
-    if variables.keys[pygame.K_s]:
-        move_selected("down", variables.blocks[str(variables.selected_index)][1].body)
-    if variables.keys[pygame.K_a]:
-        move_selected("left", variables.blocks[str(variables.selected_index)][1].body)
-    if variables.keys[pygame.K_d]:
-        move_selected("right", variables.blocks[str(variables.selected_index)][1].body)
-    if variables.keys[pygame.K_9]:
-        print("tab")
-        variables.physics_speed = 2000
+                variables.tab_pressed = True
+                variables.selected_index += 1
+                if variables.selected_index == len(variables.blocks.keys()):
+                    variables.selected_index = 0
+        else:
+            variables.tab_pressed = False
+        if variables.keys[pygame.K_w]:
+            move_selected("up", obj.body)
+        if variables.keys[pygame.K_s]:
+            move_selected("down", obj.body)
+        if variables.keys[pygame.K_a]:
+            move_selected("left", obj.body)
+        if variables.keys[pygame.K_d]:
+            move_selected("right", obj.body)
+        if variables.keys[pygame.K_9]:
+            variables.physics_speed = 5
+            variables.current_traj_follow = closest_point(obj.body.position, variables.trajectory)
+        if variables.keys[pygame.K_1]:
+            variables.current_traj_follow = closest_point(obj.body.position, variables.trajectory)
+            obj.body.position = variables.trajectory[variables.current_traj_follow]
+            obj.body.velocity = variables.trajectory_velocities[variables.current_traj_follow]
+            variables.physics_speed = 1
+            variables.current_traj_follow = 0
 
 def lerp_angular_velocity():
     if variables.blocks!= {}:
 
         selected_obj = variables.blocks[str(variables.selected_index)][1]
-        variables.trailPoints.append(selected_obj.body.position)
-        if len(variables.trailPoints) > 1000:
-            variables.trailPoints.pop(0)
-        if len(trailPoints) > 2:
-            pygame.draw.lines(variables.screen, variables.white, False, trailPoints, 5)
+        #variables.trailPoints.append(selected_obj.body.position)
+        #if len(variables.trailPoints) > 5000:
+        #    variables.trailPoints.pop(0)
+        #if len(trailPoints) > 2:
+        #    pygame.draw.lines(variables.screen, variables.white, False, trailPoints, 5)
         if len(variables.trajectory) > 2:
             pygame.draw.lines(variables.screen, variables.red, False, variables.trajectory, 5)
         match_grav_accel(selected_obj)
