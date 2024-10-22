@@ -262,7 +262,7 @@ def update(physics_speed):
             #body1.body.velocity = (0,5)
             variables.simulation_positions.append(variables.simulation_body.body.position)
             variables.simulation_velocities.append(variables.simulation_body.body.velocity)
-            if len(variables.simulation_positions) > 300 and abs(distance(variables.simulation_body.body.position, variables.simulation_positions[0]) < 5):
+            if len(variables.simulation_positions) > 700 and abs(distance(variables.simulation_body.body.position, variables.simulation_positions[0]) < 1):
                 variables.simulation_active = False
                 break
             update_trajectory_sim()
