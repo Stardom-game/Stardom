@@ -7,6 +7,7 @@ import json
 #from pymunk.examples.arrows import height
 
 MODE = "main_menu"
+zoom = (0.5,0.5)
 dt = 0
 keys = None
 screen_width = 1500
@@ -29,10 +30,22 @@ darkorange = 255,99,71
 buttons = []
 building_uis = []
 trailPoints = []
-trajectory = []
+trajectories = {}
+trajectory_follows = {}
+trajectory_follows_indexes = {}
+orbital_corrections = {}
 
 current_traj_follow = 0
+last_current_traj_follow = 0
 to_follow = None
+
+simulation_body = None
+simulation_positions = []
+simulation_velocities = []
+simulation_active = False
+simulate_per_frame = 50
+simulate_frames = 1500
+simulated_frames = 0
 
 current_accel = (0,0)
 orbit_direction = 1
@@ -104,6 +117,10 @@ selected_index = 0
 selected_obj = None
 
 force_offset = (0,0)
+
+orbit_starting_point = (0,0)
+orbit_correct_velocity = 0
+orbit_should_correct = False
 
 leftclick, middleclick, rightclick = False, False, False
 tab_pressed = False

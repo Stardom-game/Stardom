@@ -1,5 +1,5 @@
 import os, math, random, pymunk, pygame
-from variables_functions import physics, variables
+from variables_functions import physics, variables, zoomer
 
 class Planet:
     def __init__(self, x, y, radius, image):
@@ -17,5 +17,5 @@ class Planet:
         self.image = variables.images[image]
         self.radius = radius
     def update(self):
-        pygame.draw.circle(variables.screen, variables.white, (self.rect.x, self.rect.y), self.radius)
-        variables.screen.blit(pygame.transform.scale(self.image, (self.radius*2, self.radius*2)), (self.rect.x - self.radius, self.rect.y - self.radius))
+        #pygame.draw.circle(variables.screen, variables.white, (self.rect.x, self.rect.y), self.radius)
+        zoomer.blit_zoom(pygame.transform.scale(self.image, (self.radius*2, self.radius*2)), (self.rect.x - self.radius, self.rect.y - self.radius))
