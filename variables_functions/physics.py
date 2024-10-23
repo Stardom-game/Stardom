@@ -2,28 +2,55 @@
 import pygame, time
 import pymunk
 import pymunk.pygame_util
-import math, random, os, json, keyboard
+import math, random, os, json, keyboard, clock
+
+from pygame import Vector2
+from pygame.transform import rotate
+from pymunk.pygame_util import DrawOptions
+
 from variables_functions import variables
 from variables_functions.variables import blocks, mouseX, mouseY, physics_loading, selected_obj, trailPoints, \
-    physics_speed, current_accel
+    physics_speed, current_accel, space_trajectory, orbit_direction, orbit_starting_point, \
+    orbit_correct_velocity, last_current_traj_follow
+from variables_functions import zoomer
 
 
 def ballistics(current_altitude, velocity, angle, acceleration):
     print("code will be added later")
 
-
+def distance(x,y):
+    return math.hypot(y[0]-x[0], y[1]-x[1])
 def angle_of_vector(x, y):
     return math.degrees(math.atan2(-y,x))  # https://stackoverflow.com/questions/42258637/how-to-know-the-angle-between-two-vectors/64563327#64563327
+def rotate_vector(vector, angle): #https://www.kodeclik.com/how-to-rotate-and-scale-a-vector-in-python/
+    (x,y) = vector
+    angler = angle
+    newx = x*math.cos(angler) - y*math.sin(angler)
+    newy = x*math.sin(angler) + y*math.cos(angler)
+    return (newx, newy)
+def closest_point(pos, arr):
+    i = 0
+    out = None
+    out_index = -1
+    dis = 999
+    for point in arr:
+        if abs(distance(pos, point)) < dis:
+            out_index = i
+            dis = abs(distance(pos, point))
+        i += 1
+    return out_index
 
-
-def draw(space, screen, draw_options):
+def draw(draw_options):
     #variables.screen.fill("black")
-    variables.space.debug_draw(draw_options)
+    variables.space_trajectory.debug_draw(draw_options)
 
 
-def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circle=False):
-    body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
-
+def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circle=False, kinematic = False, velocity = (0,0)):
+    body=None
+    if not kinematic:
+        body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
+    else:
+        body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
     body.position = (x, y)
     shape = None
     if not circle:
@@ -36,11 +63,13 @@ def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circl
     shape.color = (255, 0, 0, 100)
     shape.body.angle = rotation
     shape.body.center_of_gravity = (width/2, height/2)
-    variables.space.add(body, shape)
+    shape.body.velocity = (velocity[0], velocity[1])
+    space.add(body, shape)
+
 
     return shape
-def create_block(image, x, y, width, height, mass, elasticity, rotation=0, override_id=-1):
-    newBlock = create_box(variables.space, x, y, width, height, mass, elasticity, rotation)
+def create_block(image, x, y, width, height, mass, elasticity, rotation=0, override_id=-1, velocity = (0,0)):
+    newBlock = create_box(variables.space, x, y, width, height, mass, elasticity, rotation, False, False, velocity)
 
     newBlockRect = pygame.rect.Rect((0, 0), (width, height))
     newBlockRect.x, newBlockRect.y = x, y
@@ -59,8 +88,12 @@ def get_save_data():
         shape = obj[1]
         body = shape.body
         rect = obj[2]
-        data.append([image, shape.body.position.x, shape.body.position.y, rect.width, rect.height, shape.mass, shape.elasticity, body.angle])
-    return data
+        data.append([image, shape.body.position.x, shape.body.position.y, rect.width, rect.height, shape.mass, shape.elasticity, body.angle, body.velocity])
+    final_data = {
+        "selected_index": variables.selected_index,
+        "blocks": data
+    }
+    return final_data
 
 def load_data(data):
     #THIS AUTOMATICALLY OVERWRITES THE EXISTING DATA, DO NOT DO " blocks = {} " IN THIS FUNCTION
@@ -81,12 +114,19 @@ def load_data(data):
     for id in ids_to_pop:
         blocks.pop(id, None)
 
+    objects = data["blocks"]
+    sel_index = data["selected_index"]
     #Overwrites all blocks with the corresponding save file block
-    for obj in data:
-        create_block(obj[0], obj[1], obj[2], obj[3], obj[4], obj[5], obj[6], obj[7], i)
+    for obj in objects:
+        create_block(obj[0], obj[1], obj[2], obj[3], obj[4], obj[5], obj[6], obj[7], i, obj[8])
         i += 1
+    selected_index = sel_index
+   # variables.trajectory, variables.trajectory_velocities = simulate_bodies(selected_obj.body.position, selected_obj.mass,
+   #                                                                         selected_obj.body.velocity)
 
     variables.physics_loading = False
+    variables.simulated_frames = 999999999 #Ends all simulations
+    variables.trajectory = []
 def create_boundaries(space, width, height):
     rects = [
         [(width / 2, height - 5), (width, 10)],  # Ground
@@ -113,8 +153,7 @@ def update_rot(data):
             blockRotated = pygame.transform.rotate(image, blockRotationAngle)  # Rotate shape
             rect.centerx, rect.centery = math.floor(block.body.position.x), math.floor(
                 block.body.position.y)  # Match rect position to body position
-            variables.screen.blit(blockRotated, rect)
-
+            zoomer.blit_zoom_rect(blockRotated, rect)
 def move_selected(mode, obj):
     obj.torque = 0
     if mode == "right":
@@ -122,39 +161,125 @@ def move_selected(mode, obj):
     if mode == "left":
         obj.torque = -1500
     if mode == "up":
-        obj.apply_impulse_at_local_point((0, -200), variables.force_offset)
-        # pymunk.Body.apply_impulse_at_world_point(obj, (0,-250), (obj.position.x, obj.position.y-100))
-
-        # pymunk.Body.apply_impulse_at_world_point(obj, (250,0), (obj.position.x+100, obj.position.y))
+        obj.velocity += rotate_vector((0,-5), obj.angle)
     if mode == "down":
-        # obj.apply_impulse_at_local_point((0,1000))
-        obj.apply_impulse_at_local_point((0, 200), variables.force_offset)
-
-        # pymunk.Body.apply_impulse_at_world_point(obj, (-250,0), (obj.position.x-100, obj.position.y))
-
-def apply_grav_accel(obj):
+        obj.velocity += rotate_vector((0,5), obj.angle)
+    if len(variables.blocks.keys()) > 0:
+        obj = variables.blocks[str(variables.selected_index)][1]
+        variables.orbital_corrections[str(variables.selected_index)] = [obj.body.position, obj.body.velocity, False]
+        trajs,vels = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity, obj.body.angle, obj.body.angular_velocity)
+        variables.trajectories[str(variables.selected_index)] = [trajs,vels]
+def apply_grav_accel(obj, kinematic = False, timewarp_dt = False):
+    last_obj_angle = obj.angle
+    obj.angle = 0
     planet = None
     for _planet in variables.planets.values():
         planet = _planet.body
         break
+    dt_use = (1/variables.fps)
+    if timewarp_dt:
+        dt_use = (1/60)
+    force_multiplier = 1
     #grav_a = 1 * 10**5 * grav_accel(150, math.hypot(abs(obj.position.x-planet.position.x), abs(obj.position.y-planet.position.y)))
     distance_vector = ((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
-    distance = math.hypot((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
-    grav_a = variables.dt * ((6.6743015 * 10**-11) * 5000000000000000000 / (distance ** 2))
+    distance_ = math.hypot((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
+    grav_a = dt_use * ((6.6743015 * 10**-11) * 5000000000000000000 / (distance_ ** 2))
     grav_a_angle = math.atan2(distance_vector[1], distance_vector[0])
 
     grav_a_vector = (grav_a * math.cos(grav_a_angle), grav_a * math.sin(grav_a_angle))
     variables.current_accel = grav_a_vector[0], grav_a_vector[1]
     #grav_a_vector = (grav_a * (obj.position.x - planet.position.x), grav_a * (obj.position.y - planet.position.y))
     #pymunk.Body.apply_force_at_world_point(obj, (grav_a_vector[0], grav_a_vector[1]), obj.position)
-    obj.apply_force_at_local_point((variables.current_accel[0], variables.current_accel[1]))
+    if not kinematic:
+        obj.apply_force_at_local_point((variables.current_accel[0] * dt_use * 60, variables.current_accel[1] * dt_use * 60))
+    else:
+        obj.velocity += (round(variables.current_accel[0] * 0.105* variables.physics_speed * force_multiplier, 10), round(variables.current_accel[1] * 0.105 * variables.physics_speed * force_multiplier, 10))
+    obj.angle = last_obj_angle
     #pymunk.Body.update_velocity(obj, grav_a_vector, 1, 1/variables.physics_speed)
+def match_grav_accel(obj, obj_index):
+    #variables.current_traj_follow = closest_point(obj.body.position, variables.trajectory)
+
+    if variables.physics_speed <= 1:
+        if str(obj_index) in variables.orbital_corrections.keys():
+            #In orbital_corrections: each block has three elements in their array:
+            #0 -> starting orbit position
+            #1 -> starting orbit velocity
+            #2 -> bool orbit should correct
+            if variables.orbital_corrections[str(obj_index)][2] and distance(variables.orbital_corrections[str(obj_index)][0], obj.body.position) < 25:
+                obj.body.position = variables.orbital_corrections[str(obj_index)][0]
+                obj.body.velocity = variables.orbital_corrections[str(obj_index)][1]
+                variables.orbital_corrections[str(obj_index)][0] = obj.body.position
+                variables.orbital_corrections[str(obj_index)][2] = False
+
+                print("correcting orbit")
+            if distance(variables.orbital_corrections[str(obj_index)][0], obj.body.position) > 150:
+                variables.orbital_corrections[str(obj_index)][2] = True
+        apply_grav_accel(obj.body, True)
+
+    # variables.trajectory_follows_indexes[str(obj_index)] -> current traj follow index
+    # variables.trajectory_follows[str(obj_index)] -> current traj position to follow
+    if variables.physics_speed > 1:
+        if str(obj_index) in variables.trajectory_follows.keys():
+            obj.body.position = variables.trajectory_follows[str(obj_index)][0], variables.trajectory_follows[str(obj_index)][1]
+        if str(obj_index) in variables.trajectories.keys():
+            if str(obj_index) in variables.trajectory_follows_indexes.keys():
+                if variables.trajectory_follows_indexes[str(obj_index)] < len(variables.trajectories[str(obj_index)][0]):
+                    variables.trajectory_follows[str(obj_index)] = variables.trajectories[str(obj_index)][0][int(variables.trajectory_follows_indexes[str(obj_index)])]
+
+                    variables.trajectory_follows_indexes[str(obj_index)] += variables.physics_speed
+                    #variables.last_current_traj_follow = variables.current_traj_follow
+
+                else:
+                    variables.trajectory_follows_indexes[str(obj_index)] = 0
+
+
+def simulate_bodies(pos1, mass1, vel1, angle1, anglevel1):
+
+    variables.simulation_body = create_box(variables.space_trajectory, pos1[0], pos1[1], 16, 16, mass1, 0, False, False, False)
+    #body2 = create_box(variables.space_trajectory, pos2[0], pos2[1], 5, 5, 20, 0, True, True)
+    variables.simulation_body.body.velocity = vel1
+    variables.simulation_body.body.angle = angle1
+    variables.simulation_body.body.angular_velocity = anglevel1
+
+    variables.simulation_positions = []
+    variables.simulation_velocities = []
+
+    variables.simulated_frames =0
+    variables.simulate_per_frames = round(500/len(variables.blocks) * 4)
+    variables.simulate_frames = 5000
+    variables.simulation_active = True
+    return variables.simulation_positions, variables.simulation_velocities
+
+def update_trajectory_sim():
+    variables.space_trajectory.step(1/60)
+
+
 def update(physics_speed):
-    callAmount = 16
+    if variables.simulation_active:
+        for _ in range(variables.simulate_per_frame):
+
+            apply_grav_accel(variables.simulation_body.body, True, True)
+            #body1.body.velocity = (0,5)
+            variables.simulation_positions.append(variables.simulation_body.body.position)
+            variables.simulation_velocities.append(variables.simulation_body.body.velocity)
+            if len(variables.simulation_positions) > 700 and abs(distance(variables.simulation_body.body.position, variables.simulation_positions[0]) < 1):
+                variables.simulation_active = False
+                break
+            update_trajectory_sim()
+            variables.simulated_frames += 1
+            if variables.simulated_frames >= variables.simulate_frames:
+                variables.simulation_active = False
+                break
+
+
+    callAmount = 8
     for _ in range(callAmount):
         variables.space.step((1 / variables.fps * physics_speed) / callAmount)
 
-    variables.dt = variables.clock.tick(variables.fps)
+    variables.clock.tick(variables.fps)
+    variables.dt = variables.clock.get_fps()
+    #if variables.clock.get_fps() > 0:
+      #  print(1/variables.clock.get_fps())
     pygame.display.update()
 
 def update_cooldown():
@@ -163,37 +288,75 @@ def update_cooldown():
     # draw(space, screen, draw_options)
     variables.newBlockCooldown += 1
 def update_movement():
-    if variables.keys[pygame.K_TAB]:
-        if variables.tab_pressed == False:
+    if str(variables.selected_index) in variables.blocks:
+        obj = variables.blocks[str(variables.selected_index)][1]
+        if variables.keys[pygame.K_TAB]:
+            if variables.tab_pressed == False:
 
-            variables.tab_pressed = True
-            variables.selected_index += 1
-            if variables.selected_index == len(variables.blocks.keys()):
-                variables.selected_index = 0
-    else:
-        variables.tab_pressed = False
-    if variables.keys[pygame.K_w]:
-        move_selected("up", variables.blocks[str(variables.selected_index)][1].body)
-    if variables.keys[pygame.K_s]:
-        move_selected("down", variables.blocks[str(variables.selected_index)][1].body)
-    if variables.keys[pygame.K_a]:
-        move_selected("left", variables.blocks[str(variables.selected_index)][1].body)
-    if variables.keys[pygame.K_d]:
-        move_selected("right", variables.blocks[str(variables.selected_index)][1].body)
-    if variables.keys[pygame.K_9]:
-        print("tab")
-        variables.physics_speed = 2000
+                variables.tab_pressed = True
+                variables.selected_index += 1
+                if variables.selected_index == len(variables.blocks.keys()):
+                    variables.selected_index = 0
+        else:
+            variables.tab_pressed = False
+       # if variables.selected_obj != None:
+        #    trajectory, trajectory_velocities = simulate_bodies(variables.selected_obj.body.position,
+       #                                                                         variables.selected_obj.mass,
+        #                                                                       variables.selected_obj.body.velocity,
+        #                                                                        variables.selected_obj.body.angle,
+        #                                                                        variables.selected_obj.body.angular_velocity)
+        #    variables.trajectories[str(variables.selected_index)] = [trajectory, trajectory_velocities]
+        if variables.keys[pygame.K_w]:
+            move_selected("up", obj.body)
+        if variables.keys[pygame.K_s]:
+            move_selected("down", obj.body)
+        if variables.keys[pygame.K_a]:
+            move_selected("left", obj.body)
+        if variables.keys[pygame.K_d]:
+            move_selected("right", obj.body)
+        if variables.keys[pygame.K_9]:
+            variables.physics_speed = 15
+            i = 0
+            for block in variables.blocks.values():
+
+                body = block[1].body
+                if str(i) in variables.trajectories.keys():
+
+                    variables.trajectory_follows_indexes[str(i)] = closest_point(body.position, variables.trajectories[str(i)][0])
+                    variables.trajectory_follows[str(i)] = variables.trajectories[str(i)][0][variables.trajectory_follows_indexes[str(i)]]
+                i += 1
+        if variables.keys[pygame.K_1]:
+            i = 0
+            for block in variables.blocks.values():
+                body = block[1].body
+                if str(i) in variables.trajectories.keys():
+                    variables.trajectory_follows[str(i)] = closest_point(body.position, variables.trajectories[str(i)][0])
+                    trajectory = variables.trajectories[str(i)][0]
+                    velocities = variables.trajectories[str(i)][1]
+                    body.position = trajectory[variables.trajectory_follows[str(i)]]
+                    body.velocity = velocities[variables.trajectory_follows[str(i)]]
+                    variables.trajectory_follows_indexes[str(i)] = 0
+                i += 1
+            variables.physics_speed = 1
 
 def lerp_angular_velocity():
     if variables.blocks!= {}:
 
         selected_obj = variables.blocks[str(variables.selected_index)][1]
-        variables.trailPoints.append(selected_obj.body.position)
-        if len(variables.trailPoints) > 1000:
-            variables.trailPoints.pop(0)
-        if len(trailPoints) > 2:
-            pygame.draw.lines(variables.screen, variables.white, False, trailPoints, 5)
-        apply_grav_accel(selected_obj.body)
+        #variables.trailPoints.append(selected_obj.body.position)
+        #if len(variables.trailPoints) > 5000:
+        #    variables.trailPoints.pop(0)
+        #if len(trailPoints) > 2:
+        #    pygame.draw.lines(variables.screen, variables.white, False, trailPoints, 5)
+        for traj in variables.trajectories.values():
+            trajectory = traj[0]
+            to_draw = [(l[0] * variables.zoom[0], l[1] * variables.zoom[1]) for l in trajectory]
+            if len(trajectory) > 2:
+                pygame.draw.lines(variables.screen, variables.red, False, to_draw, 5)
+        i = 0
+        for block in variables.blocks.values():
+            match_grav_accel(block[1], i)
+            i += 1
         variables.selected_obj = selected_obj
 
         if not variables.keys[pygame.K_a] and not variables.keys[pygame.K_d]:
@@ -205,10 +368,10 @@ def lerp_angular_velocity():
 def create_parts():
     if variables.leftclick:
         if variables.newBlockCooldown > 10:  # and pygame.Rect.colliderect(mouseRect, woodRect):
-            create_block("wood", pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 16, 16, 10, 0, 0)
+            create_block("wood", pygame.mouse.get_pos()[0] / variables.zoom[0], pygame.mouse.get_pos()[1] / variables.zoom[1], 16, 16, 10, 0, 0)
     if variables.rightclick:
         if variables.newBlockCooldown > 10:  # and pygame.Rect.colliderect(mouseRect, stoneRect):
-            create_block("stone", pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 16, 16, 10, 0, 0)
+            create_block("stone", pygame.mouse.get_pos()[0] / variables.zoom[0], pygame.mouse.get_pos()[1] / variables.zoom[1], 16, 16, 10, 0, 0)
 def update_screen():
     variables.screen.blit(variables.images["wood"], variables.woodRect)
     variables.screen.blit(variables.images["stone"], variables.stoneRect)

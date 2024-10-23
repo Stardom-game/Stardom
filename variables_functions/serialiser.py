@@ -4,12 +4,12 @@ root_dir = (os.path.abspath(os.path.join(os.getcwd())))
 save_path = (os.path.join(root_dir, "save"))
 def jsonDump():
     with open(os.path.join(save_path, 'save.json'), 'w') as jsonfile:
-        todump = physics.get_save_data()
+        todump = json.dumps(physics.get_save_data())
         json.dump(todump, jsonfile)
 def jsonRead():
     with open(os.path.join(save_path, 'save.json'), 'r') as jsonfile:
         read = json.load(jsonfile)
-        return read
+        return json.loads(read)
 
 
 def save():

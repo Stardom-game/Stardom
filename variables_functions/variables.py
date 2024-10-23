@@ -7,12 +7,14 @@ import json
 #from pymunk.examples.arrows import height
 
 MODE = "main_menu"
+zoom = (0.5,0.5)
 dt = 0
 keys = None
 screen_width = 1500
 screen_height = 750
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 space = pymunk.Space()
+space_trajectory = pymunk.Space()
 white = (255, 255, 255)
 black = (0, 0, 0)
 gray = (127, 127, 127)
@@ -28,8 +30,25 @@ darkorange = 255,99,71
 buttons = []
 building_uis = []
 trailPoints = []
+trajectories = {}
+trajectory_follows = {}
+trajectory_follows_indexes = {}
+orbital_corrections = {}
+
+current_traj_follow = 0
+last_current_traj_follow = 0
+to_follow = None
+
+simulation_body = None
+simulation_positions = []
+simulation_velocities = []
+simulation_active = False
+simulate_per_frame = 50
+simulate_frames = 1500
+simulated_frames = 0
 
 current_accel = (0,0)
+orbit_direction = 1
 
 physics_speed = 1
 
@@ -88,6 +107,7 @@ exit = False
 
 
 space.gravity = (0, 0)
+space_trajectory.gravity = (0,0)
 
 draw_options = pymunk.pygame_util.DrawOptions(screen)
 clock = pygame.time.Clock()
@@ -98,9 +118,14 @@ selected_obj = None
 
 force_offset = (0,0)
 
+orbit_starting_point = (0,0)
+orbit_correct_velocity = 0
+orbit_should_correct = False
+
 leftclick, middleclick, rightclick = False, False, False
 tab_pressed = False
 commandbuttonimg = pygame.image.load("images\\commandpodbutton.png").convert_alpha()
 rocketfile = "save\\rocketsave.json"
 
 numofparts = 0
+parts = []

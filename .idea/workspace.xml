@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5c94b8a2-03d0-404f-b450-b995686ee247" name="Changes" comment="fixing errors" />
+    <list default="true" id="5c94b8a2-03d0-404f-b450-b995686ee247" name="Changes" comment="Added ballistics">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/earth.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/earth.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/save/save.json" beforeDir="false" afterPath="$PROJECT_DIR$/save/save.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/physics.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/physics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/planet.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/planet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/planets.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/planets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/rocketbuildui.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/rocketbuildui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/serialiser.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/serialiser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/ui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/variables.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -25,12 +38,12 @@
     &quot;assignee&quot;: &quot;VeryCrazyCat&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Stardom-game/Stardom.git&quot;,
-    &quot;accountId&quot;: &quot;3fd5280c-1dce-40cd-b735-0f5cf17c43ad&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Stardom-game/Stardom.git",
+    "accountId": "0188d8aa-1818-4548-bad7-d02a6f92ebec"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -39,13 +52,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Theo Liang/Downloads/Stardom-main/Stardom-main&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/denis/Downloads/Stardom-master/Stardom-main"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Stardom-main" />
@@ -56,8 +70,8 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.12" />
-      <option name="WORKING_DIRECTORY" value="C:\Users\Theo Liang\Downloads\Stardom-main\Stardom-main" />
+      <option name="SDK_NAME" value="Python 3.11 (Stardom)" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\denis\Downloads\Stardom-master\Stardom-main" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -143,11 +157,62 @@
       <option name="project" value="LOCAL" />
       <updated>1729516061916</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fixing errors">
+      <option name="closed" value="true" />
+      <created>1729516176289</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1729516176289</updated>
+    </task>
+    <task id="LOCAL-00009" summary="FIXED ORBITAL MECHANICS">
+      <option name="closed" value="true" />
+      <created>1729522036525</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1729522036525</updated>
+    </task>
+    <task id="LOCAL-00010" summary="FIXED ORBITAL MECHANICS">
+      <option name="closed" value="true" />
+      <created>1729538268010</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1729538268010</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Added ballistics">
+      <option name="closed" value="true" />
+      <created>1729538297966</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1729538297966</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Added ballistics">
+      <option name="closed" value="true" />
+      <created>1729539647446</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1729539647446</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Added ballistics">
+      <option name="closed" value="true" />
+      <created>1729542535276</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1729542535276</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fixing errors" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing errors" />
+    <MESSAGE value="Added ballistic prediction" />
+    <MESSAGE value="FIXED ORBITAL MECHANICS" />
+    <MESSAGE value="Added ballistics" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added ballistics" />
   </component>
 </project>
