@@ -27,6 +27,9 @@ def update():
 def placeholder():
     pass
 
+def launch_action():
+    variables.MODE == "launch"
+
 def update_mouse():
     variables.mouseX, variables.mouseY = pygame.mouse.get_pos()
     variables.mousePos = pygame.mouse.get_pos()

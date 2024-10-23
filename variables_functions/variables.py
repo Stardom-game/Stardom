@@ -77,7 +77,8 @@ images = {
     "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandmodule.png")).convert_alpha(), (128,128)),
     "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (128,128)),
     "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (128,128)),
-    "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height))
+    "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
+    "launcplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha()
 }
 blank = pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha()
 mouseX, mouseY = pygame.mouse.get_pos()
