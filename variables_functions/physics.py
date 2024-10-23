@@ -9,9 +9,7 @@ from pygame.transform import rotate
 from pymunk.pygame_util import DrawOptions
 
 from variables_functions import variables
-from variables_functions.variables import blocks, mouseX, mouseY, physics_loading, selected_obj, trailPoints, \
-    physics_speed, current_accel, space_trajectory, orbit_direction, orbit_starting_point, \
-    orbit_correct_velocity, last_current_traj_follow
+from variables_functions.variables import blocks, physics_loading, joint_distances, physics_speed
 from variables_functions import zoomer
 
 
@@ -42,7 +40,7 @@ def closest_point(pos, arr):
 
 def draw(draw_options):
     #variables.screen.fill("black")
-    variables.space_trajectory.debug_draw(draw_options)
+    variables.space.debug_draw(draw_options)
 
 
 def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circle=False, kinematic = False, velocity = (0,0)):
@@ -80,7 +78,19 @@ def create_block(image, x, y, width, height, mass, elasticity, rotation=0, overr
     update_rot(variables.blocks)
     variables.newBlockCooldown = 0
 
+    return str(block_value)
 
+def create_joint(block1, block2):
+    #new_joint = pymunk.constraints.PivotJoint(block1[1].body, block2[1].body, block1[1].body.position)
+    #new_joint.collide_bodies = False
+    #new_rot_joint = pymunk.constraints.GearJoint(block1[1].body, block2[1].body, 0, 1)
+    #new_rot_joint.collide_bodies = False
+    variables.joints.append([block1, block2, block1[1].body.position - block2[1].body.position])
+    #variables.joints_in_space.append(new_joint)
+   # variables.rot_joints.append([block1, block2])
+   # variables.rot_joints_in_space.append(new_rot_joint)
+    #variables.space.add(new_joint)
+   # variables.space.add(new_rot_joint)
 def get_save_data():
     data = []
     for obj in blocks.values():
@@ -151,24 +161,36 @@ def update_rot(data):
             blockRotationVector = block.body.rotation_vector  # Get Vector2 of body
             blockRotationAngle = angle_of_vector(blockRotationVector.x, blockRotationVector.y)  # Convert Vector2 into angle
             blockRotated = pygame.transform.rotate(image, blockRotationAngle)  # Rotate shape
-            rect.centerx, rect.centery = math.floor(block.body.position.x), math.floor(
-                block.body.position.y)  # Match rect position to body position
-            zoomer.blit_zoom_rect(blockRotated, rect)
+            #rect.centerx, rect.centery = math.floor(block.body.position.x), math.floor(
+            #    block.body.position.y)  # Match rect position to body position
+
+            #https://stackoverflow.com/questions/4183208/how-do-i-rotate-an-image-around-its-center-using-pygame
+            pos_to_blit = math.floor(block.body.position.x), math.floor(
+                block.body.position.y)
+            pos_on_img = rect.width/2, rect.height/2
+            image_rect = image.get_rect(topleft=(pos_to_blit[0] - pos_on_img[0], pos_to_blit[1]-pos_on_img[1]))
+            offset_center_to_pivot = pygame.math.Vector2(pos_to_blit) - image_rect.center
+            rotated_offset = offset_center_to_pivot.rotate(-blockRotationAngle)
+
+            rotated_image_center = (pos_to_blit[0] - rotated_offset.x, pos_to_blit[1] - rotated_offset.y)
+            rotated_image = pygame.transform.rotate(image, blockRotationAngle)
+            rotated_image_rect = rotated_image.get_rect(center=rotated_image_center)
+
+            zoomer.blit_zoom_rect(rotated_image, rotated_image_rect)
 def move_selected(mode, obj):
     obj.torque = 0
     if mode == "right":
-        obj.torque = 1500
+        obj.torque = 4500
     if mode == "left":
-        obj.torque = -1500
+        obj.torque = -4500
     if mode == "up":
         obj.velocity += rotate_vector((0,-5), obj.angle)
     if mode == "down":
         obj.velocity += rotate_vector((0,5), obj.angle)
-    if len(variables.blocks.keys()) > 0:
-        obj = variables.blocks[str(variables.selected_index)][1]
-        variables.orbital_corrections[str(variables.selected_index)] = [obj.body.position, obj.body.velocity, False]
-        trajs,vels = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity, obj.body.angle, obj.body.angular_velocity)
-        variables.trajectories[str(variables.selected_index)] = [trajs,vels]
+    obj = variables.blocks[str(variables.selected_index)][1]
+    variables.orbital_corrections[str(variables.selected_index)] = [obj.body.position, obj.body.velocity, False]
+    trajs,vels = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity, obj.body.angle, obj.body.angular_velocity)
+    variables.trajectories[str(variables.selected_index)] = [trajs,vels]
 def apply_grav_accel(obj, kinematic = False, timewarp_dt = False):
     last_obj_angle = obj.angle
     obj.angle = 0
@@ -220,7 +242,10 @@ def match_grav_accel(obj, obj_index):
     # variables.trajectory_follows[str(obj_index)] -> current traj position to follow
     if variables.physics_speed > 1:
         if str(obj_index) in variables.trajectory_follows.keys():
+            #obj.body.velocity = (0,0)
             obj.body.position = variables.trajectory_follows[str(obj_index)][0], variables.trajectory_follows[str(obj_index)][1]
+            obj.body.angular_velocity = 0
+
         if str(obj_index) in variables.trajectories.keys():
             if str(obj_index) in variables.trajectory_follows_indexes.keys():
                 if variables.trajectory_follows_indexes[str(obj_index)] < len(variables.trajectories[str(obj_index)][0]):
@@ -245,8 +270,8 @@ def simulate_bodies(pos1, mass1, vel1, angle1, anglevel1):
     variables.simulation_velocities = []
 
     variables.simulated_frames =0
-    variables.simulate_per_frames = round(500/len(variables.blocks) * 4)
-    variables.simulate_frames = 5000
+    variables.simulate_per_frames = 5
+    variables.simulate_frames = 10000
     variables.simulation_active = True
     return variables.simulation_positions, variables.simulation_velocities
 
@@ -272,7 +297,7 @@ def update(physics_speed):
                 break
 
 
-    callAmount = 8
+    callAmount = 2
     for _ in range(callAmount):
         variables.space.step((1 / variables.fps * physics_speed) / callAmount)
 
@@ -317,6 +342,7 @@ def update_movement():
         if variables.keys[pygame.K_9]:
             variables.physics_speed = 15
             i = 0
+
             for block in variables.blocks.values():
 
                 body = block[1].body
@@ -324,7 +350,9 @@ def update_movement():
 
                     variables.trajectory_follows_indexes[str(i)] = closest_point(body.position, variables.trajectories[str(i)][0])
                     variables.trajectory_follows[str(i)] = variables.trajectories[str(i)][0][variables.trajectory_follows_indexes[str(i)]]
+
                 i += 1
+
         if variables.keys[pygame.K_1]:
             i = 0
             for block in variables.blocks.values():
@@ -348,17 +376,28 @@ def lerp_angular_velocity():
         #    variables.trailPoints.pop(0)
         #if len(trailPoints) > 2:
         #    pygame.draw.lines(variables.screen, variables.white, False, trailPoints, 5)
+        for joint in variables.joints:
+            body1 = joint[0][1].body
+            body2 = joint[1][1].body
+            dis = rotate_vector(joint[2], body2.angle)
+            body1.position = body2.position + dis
+            body1.angle = body2.angle
         for traj in variables.trajectories.values():
             trajectory = traj[0]
             to_draw = [(l[0] * variables.zoom[0], l[1] * variables.zoom[1]) for l in trajectory]
             if len(trajectory) > 2:
                 pygame.draw.lines(variables.screen, variables.red, False, to_draw, 5)
+
         i = 0
         for block in variables.blocks.values():
             match_grav_accel(block[1], i)
+            #else:
+             #   print(block)
             i += 1
-        variables.selected_obj = selected_obj
 
+        #if timewarp > 1, all joints retain same distance apart
+
+        variables.selected_obj = selected_obj
         if not variables.keys[pygame.K_a] and not variables.keys[pygame.K_d]:
             if abs(selected_obj.body.angular_velocity) > 0.02:
                 selected_obj.body.angular_velocity = selected_obj.body.angular_velocity + (0-selected_obj.body.angular_velocity) * 0.05
@@ -373,8 +412,8 @@ def create_parts():
         if variables.newBlockCooldown > 10:  # and pygame.Rect.colliderect(mouseRect, stoneRect):
             create_block("stone", pygame.mouse.get_pos()[0] / variables.zoom[0], pygame.mouse.get_pos()[1] / variables.zoom[1], 16, 16, 10, 0, 0)
 def update_screen():
-    variables.screen.blit(variables.images["wood"], variables.woodRect)
-    variables.screen.blit(variables.images["stone"], variables.stoneRect)
+   # variables.screen.blit(variables.images["wood"], variables.woodRect)
+    #variables.screen.blit(variables.images["stone"], variables.stoneRect)
 
     update_rot(blocks)
     update(variables.physics_speed)

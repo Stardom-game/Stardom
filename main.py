@@ -3,7 +3,7 @@ from multiprocessing.forkserver import read_signed
 import json
 import pygame, pymunk, time
 import keyboard
-
+from pymunk.pygame_util import DrawOptions
 
 from variables_functions import variables, ui, physics, serialiser, planets, rocketbuildui
 from pygame.locals import *
@@ -27,7 +27,9 @@ while variables.running:
         physics.lerp_angular_velocity()
         physics.create_parts()
         planets.update()
+        #physics.draw(DrawOptions(variables.screen))
         physics.update_screen()
+
     #if variables.to_follow != None:
       #  variables.screen.blit(variables.images["wood"], (variables.to_follow[0], variables.to_follow[1]))
 

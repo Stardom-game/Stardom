@@ -1,7 +1,7 @@
 import pygame
 import keyboard
 from variables_functions import variables
-from variables_functions import ui_elements
+from variables_functions import ui_elements, physics
 from variables_functions import serialiser, rocketbuildui
 import os
 
@@ -27,8 +27,7 @@ def update():
 def placeholder():
     pass
 
-def launch_action():
-    variables.MODE == "launch"
+
 
 def update_mouse():
     variables.mouseX, variables.mouseY = pygame.mouse.get_pos()

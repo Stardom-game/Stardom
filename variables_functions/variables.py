@@ -75,10 +75,13 @@ images = {
     "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
     "commandpodbutton": pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(),
     "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandmodule.png")).convert_alpha(), (128,128)),
+    "commandpodussr_unsized": pygame.image.load(os.path.join(root_dir, "images", "commandmodule.png")).convert_alpha(),
     "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (128,128)),
+    "fueltankru_unsized": pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(),
     "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (128,128)),
+    "engine1_unsized": pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(),
     "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
-    "launcplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha()
+    "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha()
 }
 blank = pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha()
 mouseX, mouseY = pygame.mouse.get_pos()
@@ -99,7 +102,12 @@ planets = {
 
 }
 
-
+joints = []
+joints_in_space = []
+rot_joints = []
+rot_joints_in_space = []
+joint_distances = []
+joints_before_timewarp = []
 test = 0
 blockCollision = False
 newBlockCooldown = 0
@@ -130,3 +138,4 @@ rocketfile = "save\\rocketsave.json"
 
 numofparts = 0
 parts = []
+parts_sim = []
