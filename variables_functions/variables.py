@@ -75,13 +75,13 @@ images = {
     "stone": pygame.image.load(os.path.join(root_dir, "images", "stone.png")).convert_alpha(),
     "planet": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(), (10000, 10000)),
     "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
-    "commandpodbutton": pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(),
-    "commandpodussr": pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(),
-    "fueltankru": pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(),
-    "engine1": pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(),
+    "commandpodbutton": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(), (31, 32)),
+    "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(), (31, 32)),
+    "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (31, 32)),
+    "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (31, 32)),
     "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
     "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha(),
-    "commandpodusa": pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(),
+    "commandpodusa": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(), (31, 32)),
     "sidebarbuildmenu": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "sidebarbuildmenu.png")).convert_alpha(), (91, 3000))
 
 }
