@@ -5,8 +5,8 @@ import pygame
 import pymunk
 import keyboard
 from variables_functions import variables, physics
-from variables_functions import ui_elements, ui
-from variables_functions.variables import numofparts, num_of_rockets
+from variables_functions import ui_elements, ui, zoomer
+from variables_functions.variables import numofparts, num_of_rockets, moving_part, moving
 import os
 
 
@@ -17,34 +17,16 @@ if len(variables.parts) == 0:
 else:
     a = 0
 def make_ussrcommandpod():
-    variables.parts.append(["commandpodussr", variables.screen_width/2, a+variables.numofparts*128])
-    variables.parts_sim.append(["commandpodussr_unsized", 0, 0 + variables.numofparts * 31, 31, 31, 10])
-    variables.numofparts += 1
+    variables.moving_part = [["commandpodussr", "mouseX", "mouseY"], ["commandpodussr", "mouseX", "mouseY", 31, 31, 10]]
 
 def make_fueltank():
-    variables.parts.append(["fueltankru", variables.screen_width/2, a+variables.numofparts*128])
-    variables.parts_sim.append(["fueltankru_unsized", 0, 0 + variables.numofparts * 31, 31, 31, 10])
-    variables.numofparts += 1
+    variables.moving_part = [["fueltankru", "mouseX", "mouseY"], ["fueltankru", "mouseX", "mouseY", 31, 31, 10]]
 
 def make_engine1():
-    #Next time make the origin of all points the same as the minimum empty position (i.e. all rockets start from 0,0 regardless of where they are built)
-    #variables.parts.append(["engine1", variables.screen_width/2, a+variables.numofparts*128])
-    #variables.parts_sim.append(["engine1_unsized", 0, 0 + variables.numofparts * 31, 31, 31, 10])
-    #variables.numofparts += 1
-    variables.selected = "Engine1"
-    if variables.selected == "Engine1":
-        engine1rect = variables.images["engine1"].get_rect(center = (15.5, 15.5))
-        moving = False
-
-
-
-
-
+    variables.moving_part = [["engine1", "mouseX", "mouseY"], ["engine1", "mouseX", "mouseY", 31, 31, 10]]
 
 def make_commandpodusa():
-    variables.parts.append(["commandpodusa", variables.screen_width / 2, a + variables.numofparts * 128])
-    variables.parts_sim.append(["commandpodusa_unsized", 0, 0 + variables.numofparts * 31, 31, 31, 10])
-    variables.numofparts += 1
+    variables.moving_part = [["commandpodusa", "mouseX", "mouseY"], ["commandpodusa", "mouseX", "mouseY", 31, 31, 10]]
 
 def back():
     ui.change_mode("main_menu")
@@ -101,8 +83,11 @@ def loadrocket():
     with open(os.path.join(save_path, 'rocketsave.json'), 'r') as jsonfile:
         read = json.load(jsonfile)
         variables.parts, variables.parts_sim = read[0], read[1]
-
-
+def zoom_in():
+    variables.zoomui = (variables.zoomui[0] + 0.4, variables.zoomui[1] + 0.4)
+def zoom_out():
+    if variables.zoomui[0] > 0.4:
+        variables.zoomui = (variables.zoomui[0] - 0.4, variables.zoomui[1] - 0.4)
 def build_ui():
     variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width-125, 20, 100, 75,
                             variables.white, variables.black, "consolas", 15, 20, "<",
@@ -147,10 +132,42 @@ def build_ui():
                            variables.white, variables.black, "consolas", 15, 20, "Load",
                            variables.blank, "Loadrocket", loadrocket,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
+    variables.buttons.append(
+        ui_elements.Button(variables.screen, variables.screen.get_width() - 150, variables.screen.get_height() - 165,
+                           30, 30,
+                           variables.white, variables.black, "consolas", 15, 20, "+",
+                           variables.blank, "zoomin", zoom_in,
+                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
+    variables.buttons.append(
+        ui_elements.Button(variables.screen, variables.screen.get_width() - 150, variables.screen.get_height() - 255,
+                           30, 30,
+                           variables.white, variables.black, "consolas", 15, 20, "-",
+                           variables.blank, "zoomout", zoom_out,
+                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
 def update():
     variables.screen.blit(pygame.transform.scale(variables.images["buildbg"], (variables.screen.get_width(), variables.screen.get_height())), (0, 0))
     variables.screen.blit(pygame.transform.scale(variables.images["sidebarbuildmenu"], (140, 3000)), (0, 0))
     for part in variables.parts:
         #variables.screen.blit(variables.images[part[0]], (variables.screen_width/2, variables.screen_height-10+variables.numofparts*31))
-        variables.screen.blit(variables.images[part[0]],
+        zoomer.blit_zoom_ui(variables.images[part[0]],
                                         (part[1], part[2]))
+    if variables.moving_part != []:
+        zoomer.blit_zoom_ui(variables.images[variables.moving_part[0][0]], (variables.mousePos[0] / variables.zoomui[0], variables.mousePos[1] / variables.zoomui[1]))
+        if not variables.leftclick: #If leftclick is just pressed
+
+            part = variables.moving_part[0]
+            part = [(variables.mouseX / variables.zoomui[0] if l == "mouseX"
+                     else (variables.mouseY / variables.zoomui[1]  if l == "mouseY" else
+                           l
+                           )) for l in part] #Replaces "mouseX" and "mouseY" with variables.mouseX and variables.mouseY
+
+            part_sim = variables.moving_part[1]
+            part_sim = [(variables.mouseX / variables.zoomui[0] if l == "mouseX"
+                         else (variables.mouseY / variables.zoomui[1] if l == "mouseY"
+                               else l
+                               )) for l in part_sim]
+
+            variables.parts.append(part)
+            variables.parts_sim.append(part_sim)
+            variables.numofparts += 1
+            variables.moving_part = []

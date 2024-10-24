@@ -8,6 +8,7 @@ import json
 
 MODE = "main_menu"
 zoom = (1,1)
+zoomui = (3,3)
 cam_offset = (700,100)
 dt = 0
 keys = None
@@ -75,16 +76,12 @@ images = {
     "planet": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(), (10000, 10000)),
     "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
     "commandpodbutton": pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(),
-    "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(), (128,128)),
-    "commandpodussr_unsized": pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(),
-    "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (128,128)),
-    "fueltankru_unsized": pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(),
-    "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (128,128)),
-    "engine1_unsized": pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(),
+    "commandpodussr": pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(),
+    "fueltankru": pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(),
+    "engine1": pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(),
     "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
     "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha(),
-    "commandpodusa": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(), (128, 128)),
-    "commandpodusa_unsized": pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(),
+    "commandpodusa": pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(),
     "sidebarbuildmenu": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "sidebarbuildmenu.png")).convert_alpha(), (91, 3000))
 
 }
@@ -139,10 +136,13 @@ orbit_correct_velocity = 0
 orbit_should_correct = False
 
 leftclick, middleclick, rightclick = False, False, False
+prev_leftclick = False
 tab_pressed = False
 commandbuttonimg = pygame.image.load("images\\commandpodbutton.png").convert_alpha()
 rocketfile = "save\\rocketsave.json"
 
 numofparts = 0
+moving_part = []
+moving = False
 parts = []
 parts_sim = []
