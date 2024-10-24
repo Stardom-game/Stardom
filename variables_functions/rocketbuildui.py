@@ -13,7 +13,7 @@ if len(variables.parts) == 0:
     a = 50
 else:
     a = 0
-def make_commandpod():
+def make_ussrcommandpod():
     variables.parts.append(["commandpodussr", variables.screen_width/2, a+variables.numofparts*128])
     variables.parts_sim.append(["commandpodussr_unsized", 0, 0 + variables.numofparts * 31, 31, 31, 10])
     variables.numofparts += 1
@@ -68,6 +68,9 @@ def launch():
         else:
             physics.create_joint(block, original_part)
         i += 1
+def clearscreen():
+    variables.parts.clear()
+
 def build_ui():
     variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width-125, 20, 100, 75,
                             variables.white, variables.black, "consolas", 15, 20, "<",
@@ -81,7 +84,7 @@ def build_ui():
                             outlinethickness=5))
     variables.buttons.append(ui_elements.Button(variables.screen, 20, 0, 100, 75,
                            variables.white, variables.black, "consolas", 15, 20, "Make Command Module",
-                           variables.blank, "summon command module", make_commandpod,
+                           variables.blank, "summon soviet command module", make_ussrcommandpod,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
     variables.buttons.append(ui_elements.Button(variables.screen, 20, 140, 100, 75,
                            variables.white, variables.black, "consolas", 15, 20, "Make Fuel Tank",
@@ -91,7 +94,10 @@ def build_ui():
                            variables.white, variables.black, "consolas", 15, 20, "Make Engine",
                            variables.blank, "summon engine1", make_engine1,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
-
+    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width-100, variables.screen_height-75, 100, 75,
+                           variables.white, variables.black, "consolas", 15, 20, "Clear",
+                           variables.blank, "Clear screen", clearscreen,
+                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
 def update():
     variables.screen.blit(variables.images["buildbg"], (0, 0))
     for part in variables.parts:

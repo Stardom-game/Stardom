@@ -71,17 +71,19 @@ images = {
     "blank": pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha(),
     "wood": pygame.image.load(os.path.join(root_dir, "images", "wood.png")).convert_alpha(),
     "stone": pygame.image.load(os.path.join(root_dir, "images", "stone.png")).convert_alpha(),
-    "planet": pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(),
+    "planet": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(), (10000, 10000)),
     "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
     "commandpodbutton": pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(),
-    "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandmodule.png")).convert_alpha(), (128,128)),
-    "commandpodussr_unsized": pygame.image.load(os.path.join(root_dir, "images", "commandmodule.png")).convert_alpha(),
+    "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(), (128,128)),
+    "commandpodussr_unsized": pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(),
     "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (128,128)),
     "fueltankru_unsized": pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(),
     "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (128,128)),
     "engine1_unsized": pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(),
     "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
-    "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha()
+    "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha(),
+    "commandpodusa": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(), (128, 128)),
+    "commandpodusa-unsized": pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha()
 }
 blank = pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha()
 mouseX, mouseY = pygame.mouse.get_pos()
