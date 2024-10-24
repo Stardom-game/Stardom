@@ -4,16 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5c94b8a2-03d0-404f-b450-b995686ee247" name="Changes" comment="Added ballistics">
+    <list default="true" id="5c94b8a2-03d0-404f-b450-b995686ee247" name="Changes" comment="Assembled rockets can now be launched">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/save/save.json" beforeDir="false" afterPath="$PROJECT_DIR$/save/save.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/variables_functions/launch.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/variables_functions/physics.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/physics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/variables_functions/planets.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/planets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/save/rocketsave.json" beforeDir="false" afterPath="$PROJECT_DIR$/save/rocketsave.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.png" beforeDir="false" afterPath="$PROJECT_DIR$/test.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/variables_functions/rocketbuildui.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/rocketbuildui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/variables_functions/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/ui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/variables_functions/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/variables.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +33,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Stardom-game/Stardom.git&quot;,
-    &quot;accountId&quot;: &quot;0188d8aa-1818-4548-bad7-d02a6f92ebec&quot;
+    &quot;accountId&quot;: &quot;3fd5280c-1dce-40cd-b735-0f5cf17c43ad&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -49,14 +44,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/Theo Liang/Downloads/Stardom-main/Stardom-main"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Theo Liang/Downloads/Stardom-main/Stardom-main&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Theo Liang\Downloads\Stardom-main\Stardom-main\images" />
@@ -207,7 +202,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729542535276</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Assembled rockets can now be launched">
+      <option name="closed" value="true" />
+      <created>1729722063372</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1729722063372</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -215,6 +218,7 @@
     <MESSAGE value="Added ballistic prediction" />
     <MESSAGE value="FIXED ORBITAL MECHANICS" />
     <MESSAGE value="Added ballistics" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added ballistics" />
+    <MESSAGE value="Assembled rockets can now be launched" />
+    <option name="LAST_COMMIT_MESSAGE" value="Assembled rockets can now be launched" />
   </component>
 </project>

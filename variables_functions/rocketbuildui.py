@@ -50,7 +50,7 @@ def compound_rocket_img():
 
     for part in variables.parts_sim:
         out_img.blit(variables.images[part[0]], (part[1], part[2]))
-    pygame.image.save(out_img, "test.png")
+    #pygame.image.save(out_img, "test.png")
     return out_img
 
 def launch():
@@ -77,14 +77,14 @@ def saverocket():
     root_dir = (os.path.abspath(os.path.join(os.getcwd())))
     save_path = (os.path.join(root_dir, "save"))
     with open(os.path.join(save_path, 'rocketsave.json'), 'w') as jsonfile:
-        dump = json.dumps(variables.parts)
-        json.dump(dump, jsonfile)
+        json.dump([variables.parts, variables.parts_sim], jsonfile)
+        #json.dump(dump, jsonfile)
 def loadrocket():
     root_dir = (os.path.abspath(os.path.join(os.getcwd())))
     save_path = (os.path.join(root_dir, "save"))
     with open(os.path.join(save_path, 'rocketsave.json'), 'r') as jsonfile:
         read = json.load(jsonfile)
-        variables.parts = read
+        variables.parts, variables.parts_sim = read[0], read[1]
 
 
 def build_ui():
