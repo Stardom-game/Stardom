@@ -9,7 +9,7 @@ from pygame.transform import rotate
 from pymunk.pygame_util import DrawOptions
 
 from variables_functions import variables
-from variables_functions.variables import blocks, physics_loading, joint_distances, physics_speed
+from variables_functions.variables import blocks, physics_loading, joint_distances, physics_speed, cam_offset
 from variables_functions import zoomer
 
 
@@ -85,6 +85,8 @@ def create_joint(block1, block2):
     #new_joint.collide_bodies = False
     #new_rot_joint = pymunk.constraints.GearJoint(block1[1].body, block2[1].body, 0, 1)
     #new_rot_joint.collide_bodies = False
+    block1[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
+    block2[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
     variables.joints.append([block1, block2, block1[1].body.position - block2[1].body.position])
     #variables.joints_in_space.append(new_joint)
    # variables.rot_joints.append([block1, block2])
@@ -384,7 +386,7 @@ def lerp_angular_velocity():
             body1.angle = body2.angle
         for traj in variables.trajectories.values():
             trajectory = traj[0]
-            to_draw = [(l[0] * variables.zoom[0], l[1] * variables.zoom[1]) for l in trajectory]
+            to_draw = [(l[0] * variables.zoom[0] + variables.cam_offset[0], l[1] * variables.zoom[1] + variables.cam_offset[1]) for l in trajectory]
             if len(trajectory) > 2:
                 pygame.draw.lines(variables.screen, variables.red, False, to_draw, 5)
 
@@ -405,9 +407,9 @@ def lerp_angular_velocity():
                 selected_obj.body.angular_velocity = 0
 
 def create_parts():
-    if variables.leftclick:
-        if variables.newBlockCooldown > 10:  # and pygame.Rect.colliderect(mouseRect, woodRect):
-            create_block("wood", pygame.mouse.get_pos()[0] / variables.zoom[0], pygame.mouse.get_pos()[1] / variables.zoom[1], 16, 16, 10, 0, 0)
+    #if variables.leftclick:
+     #   if variables.newBlockCooldown > 10:  # and pygame.Rect.colliderect(mouseRect, woodRect):
+     #       create_block("wood", pygame.mouse.get_pos()[0] / variables.zoom[0], pygame.mouse.get_pos()[1] / variables.zoom[1], 16, 16, 10, 0, 0)
     if variables.rightclick:
         if variables.newBlockCooldown > 10:  # and pygame.Rect.colliderect(mouseRect, stoneRect):
             create_block("stone", pygame.mouse.get_pos()[0] / variables.zoom[0], pygame.mouse.get_pos()[1] / variables.zoom[1], 16, 16, 10, 0, 0)

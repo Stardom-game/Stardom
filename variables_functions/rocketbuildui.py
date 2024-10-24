@@ -6,8 +6,9 @@ import pymunk
 import keyboard
 from variables_functions import variables, physics
 from variables_functions import ui_elements, ui
-from variables_functions.variables import numofparts
+from variables_functions.variables import numofparts, num_of_rockets
 import os
+
 
 ##--BUILDING FUNCTIONS--##
 
@@ -70,6 +71,7 @@ def launch():
         else:
             physics.create_joint(block, original_part)
         i += 1
+    variables.num_of_rockets += 1
 def clearscreen():
     variables.parts.clear()
     variables.numofparts = 0

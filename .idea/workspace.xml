@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5c94b8a2-03d0-404f-b450-b995686ee247" name="Changes" comment="Assembled rockets can now be launched">
+    <list default="true" id="5c94b8a2-03d0-404f-b450-b995686ee247" name="Changes" comment="Fixed saving and loading">
+      <change afterPath="$PROJECT_DIR$/variables_functions/camera.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/save/rocketsave.json" beforeDir="false" afterPath="$PROJECT_DIR$/save/rocketsave.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.png" beforeDir="false" afterPath="$PROJECT_DIR$/test.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/physics.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/physics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/variables_functions/rocketbuildui.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/rocketbuildui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/variables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/variables_functions/zoomer.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/zoomer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,7 +213,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729722063372</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Fixed saving and loading">
+      <option name="closed" value="true" />
+      <created>1729770543663</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1729770543663</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -219,6 +230,7 @@
     <MESSAGE value="FIXED ORBITAL MECHANICS" />
     <MESSAGE value="Added ballistics" />
     <MESSAGE value="Assembled rockets can now be launched" />
-    <option name="LAST_COMMIT_MESSAGE" value="Assembled rockets can now be launched" />
+    <MESSAGE value="Fixed saving and loading" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed saving and loading" />
   </component>
 </project>

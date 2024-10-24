@@ -7,7 +7,8 @@ import json
 #from pymunk.examples.arrows import height
 
 MODE = "main_menu"
-zoom = (0.5,0.5)
+zoom = (1,1)
+cam_offset = (700,100)
 dt = 0
 keys = None
 screen_width = 1500
@@ -113,7 +114,7 @@ joints_before_timewarp = []
 test = 0
 blockCollision = False
 newBlockCooldown = 0
-
+num_of_rockets = 0
 exit = False
 
 
