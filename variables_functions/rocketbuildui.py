@@ -6,7 +6,7 @@ import pymunk
 import keyboard
 from variables_functions import variables, physics
 from variables_functions import ui_elements, ui, zoomer
-from variables_functions.variables import numofparts, num_of_rockets, moving_part, moving
+from variables_functions.variables import numofparts, num_of_rockets, moving_part, moving, snappedMousePos
 import os
 
 
@@ -120,7 +120,7 @@ def build_ui():
 
 
 
-    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width - 100, variables.screen_width-75, 100, 75,
+    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width - 100, variables.screen_height-75, 100, 75,
                            variables.white, variables.black, "consolas", 15, 20, "Clear",
                            variables.blank, "Clear screen", clearscreen,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
@@ -152,18 +152,19 @@ def update():
         zoomer.blit_zoom_ui(variables.images[part[0]],
                                         (part[1], part[2]))
     if variables.moving_part != []:
-        zoomer.blit_zoom_ui(variables.images[variables.moving_part[0][0]], ((variables.mousePos[0]-variables.mousePos[0]%4) / variables.zoomui[0], (variables.mousePos[1]-variables.mousePos[1]%4) / variables.zoomui[1]))
+        variables.snappedMousePos = variables.mousePos[0]//8*8, variables.mousePos[1]//8*8,
+        zoomer.blit_zoom_ui(variables.images[variables.moving_part[0][0]], ((variables.snappedMousePos[0]) // variables.zoomui[0], (variables.snappedMousePos[1]) // variables.zoomui[1]))
         if not variables.leftclick: #If leftclick is just pressed
 
             part = variables.moving_part[0]
-            part = [(variables.mouseX / variables.zoomui[0] if l == "mouseX"
-                     else (variables.mouseY / variables.zoomui[1]  if l == "mouseY" else
+            part = [(variables.snappedMousePos[0] // variables.zoomui[0] if l == "mouseX"
+                     else (variables.snappedMousePos[1] // variables.zoomui[1]  if l == "mouseY" else
                            l
                            )) for l in part] #Replaces "mouseX" and "mouseY" with variables.mouseX and variables.mouseY
 
             part_sim = variables.moving_part[1]
-            part_sim = [(variables.mouseX / variables.zoomui[0] if l == "mouseX"
-                         else (variables.mouseY / variables.zoomui[1] if l == "mouseY"
+            part_sim = [(variables.snappedMousePos[0] // variables.zoomui[0] if l == "mouseX"
+                         else (variables.snappedMousePos[1] // variables.zoomui[1] if l == "mouseY"
                                else l
                                )) for l in part_sim]
 
@@ -171,3 +172,4 @@ def update():
             variables.parts_sim.append(part_sim)
             variables.numofparts += 1
             variables.moving_part = []
+

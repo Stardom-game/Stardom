@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5c94b8a2-03d0-404f-b450-b995686ee247" name="Changes" comment="camera zoom">
+    <list default="true" id="5c94b8a2-03d0-404f-b450-b995686ee247" name="Changes" comment="zoom ui in rocket building screen, and dragging parts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/variables_functions/rocketbuildui.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/rocketbuildui.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/variables_functions/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/variables.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/variables_functions/zoomer.py" beforeDir="false" afterPath="$PROJECT_DIR$/variables_functions/zoomer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,7 +225,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729772838242</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="zoom ui in rocket building screen, and dragging parts">
+      <option name="closed" value="true" />
+      <created>1729800801588</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1729800801588</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -237,6 +244,7 @@
     <MESSAGE value="Assembled rockets can now be launched" />
     <MESSAGE value="Fixed saving and loading" />
     <MESSAGE value="camera zoom" />
-    <option name="LAST_COMMIT_MESSAGE" value="camera zoom" />
+    <MESSAGE value="zoom ui in rocket building screen, and dragging parts" />
+    <option name="LAST_COMMIT_MESSAGE" value="zoom ui in rocket building screen, and dragging parts" />
   </component>
 </project>

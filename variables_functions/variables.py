@@ -88,6 +88,7 @@ images = {
 blank = pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha()
 mouseX, mouseY = pygame.mouse.get_pos()
 mousePos = pygame.mouse.get_pos()
+snappedMousePos = pygame.mouse.get_pos()
 mouseRect = pygame.rect.Rect((0,0), (1, 1))
 
 physics_loading = False
