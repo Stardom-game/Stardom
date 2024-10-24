@@ -11,9 +11,9 @@ zoom = (1,1)
 cam_offset = (700,100)
 dt = 0
 keys = None
-screen_width = 1500
-screen_height = 750
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+screen = pygame.display.set_mode((1500, 750), pygame.RESIZABLE)
+screen_width = screen.get_width()
+screen_height = screen.get_height()
 space = pymunk.Space()
 space_trajectory = pymunk.Space()
 white = (255, 255, 255)
@@ -84,7 +84,9 @@ images = {
     "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
     "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha(),
     "commandpodusa": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(), (128, 128)),
-    "commandpodusa-unsized": pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha()
+    "commandpodusa_unsized": pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(),
+    "sidebarbuildmenu": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "sidebarbuildmenu.png")).convert_alpha(), (91, 3000))
+
 }
 blank = pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha()
 mouseX, mouseY = pygame.mouse.get_pos()

@@ -4,8 +4,8 @@ import pygame
 
 def update():
     keys = variables.keys
-    if variables.selected_obj != None:
-        variables.cam_offset = -(variables.selected_obj.body.position) + ((variables.screen_width/2),  (variables.screen_height/2))
+    if variables.selected_obj is not None:
+        variables.cam_offset = -variables.selected_obj.body.position + ((variables.screen_width/2),  (variables.screen_height/2))
 
     for event in pygame.event.get():
         if event.type == pygame.MOUSEWHEEL:

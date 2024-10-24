@@ -28,8 +28,17 @@ def make_fueltank():
 
 def make_engine1():
     #Next time make the origin of all points the same as the minimum empty position (i.e. all rockets start from 0,0 regardless of where they are built)
-    variables.parts.append(["engine1", variables.screen_width/2, a+variables.numofparts*128])
-    variables.parts_sim.append(["engine1_unsized", 0, 0 + variables.numofparts * 31, 31, 31, 10])
+    #variables.parts.append(["engine1", variables.screen_width/2, a+variables.numofparts*128])
+    #variables.parts_sim.append(["engine1_unsized", 0, 0 + variables.numofparts * 31, 31, 31, 10])
+    #variables.numofparts += 1
+    engine1_rect = variables.images["engine1"].get_rect(center=pygame.mouse.get_pos())
+    variables.screen.blit(variables.images["engine1"], engine1_rect,pygame.mouse.get_pos())
+
+
+
+def make_commandpodusa():
+    variables.parts.append(["commandpodusa", variables.screen_width / 2, a + variables.numofparts * 128])
+    variables.parts_sim.append(["commandpodusa_unsized", 0, 0 + variables.numofparts * 31, 31, 31, 10])
     variables.numofparts += 1
 
 def back():
@@ -101,31 +110,41 @@ def build_ui():
                             hide_fill=False, outline=False, outlinecolor=(255, 255, 255),
                             outlinethickness=5))
     variables.buttons.append(ui_elements.Button(variables.screen, 20, 0, 100, 75,
-                           variables.white, variables.black, "consolas", 15, 20, "Make Command Module",
-                           variables.blank, "summon soviet command module", make_ussrcommandpod,
-                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
-    variables.buttons.append(ui_elements.Button(variables.screen, 20, 140, 100, 75,
-                           variables.white, variables.black, "consolas", 15, 20, "Make Fuel Tank",
-                           variables.blank, "summon fuel tank", make_fueltank,
-                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
-    variables.buttons.append(ui_elements.Button(variables.screen, 20, 280, 100, 75,
-                           variables.white, variables.black, "consolas", 15, 20, "Make Engine",
-                           variables.blank, "summon engine1", make_engine1,
-                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
-    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width-100, variables.screen_height-75, 100, 75,
+                           variables.white, variables.black, "consolas", 15, 20, "",
+                           pygame.transform.scale(variables.images["commandpodussr"], (62, 62)), "summon soviet command module", make_ussrcommandpod,
+                           hide_fill=True, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
+    variables.buttons.append(ui_elements.Button(variables.screen, 20, 82, 100, 75,
+                                                variables.white, variables.black, "consolas", 15, 20, "",
+                                                pygame.transform.scale(variables.images["commandpodusa"], (62, 62)),
+                                                "summon usa command pod", make_commandpodusa,
+                                                hide_fill=True, outline=False, outlinecolor=(255, 255, 255),
+                                                outlinethickness=5))
+    variables.buttons.append(ui_elements.Button(variables.screen, 20, 164, 100, 75,
+                           variables.white, variables.black, "consolas", 15, 20, "",
+                           pygame.transform.scale(variables.images["fueltankru"], (62, 62)), "summon fuel tank", make_fueltank,
+                           hide_fill=True, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
+    variables.buttons.append(ui_elements.Button(variables.screen, 20, 246, 100, 75,
+                           variables.white, variables.black, "consolas", 15, 20, "",
+                           pygame.transform.scale(variables.images["engine1"], (62, 62)), "summon engine1", make_engine1,
+                           hide_fill=True, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
+
+
+
+    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width - 100, variables.screen_width-75, 100, 75,
                            variables.white, variables.black, "consolas", 15, 20, "Clear",
                            variables.blank, "Clear screen", clearscreen,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
-    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width - 100, variables.screen_height - 165, 100, 75,
+    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen.get_width() - 100, variables.screen.get_height() - 165, 100, 75,
                            variables.white, variables.black, "consolas", 15, 20, "Save",
                            variables.blank, "Saverocket", saverocket,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
-    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width - 100, variables.screen_height - 255, 100, 75,
+    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen.get_width() - 100, variables.screen.get_height() - 255, 100, 75,
                            variables.white, variables.black, "consolas", 15, 20, "Load",
                            variables.blank, "Loadrocket", loadrocket,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
 def update():
-    variables.screen.blit(variables.images["buildbg"], (0, 0))
+    variables.screen.blit(pygame.transform.scale(variables.images["buildbg"], (variables.screen.get_width(), variables.screen.get_height())), (0, 0))
+    variables.screen.blit(pygame.transform.scale(variables.images["sidebarbuildmenu"], (140, 3000)), (0, 0))
     for part in variables.parts:
         #variables.screen.blit(variables.images[part[0]], (variables.screen_width/2, variables.screen_height-10+variables.numofparts*31))
         variables.screen.blit(variables.images[part[0]],
