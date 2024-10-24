@@ -31,8 +31,13 @@ def make_engine1():
     #variables.parts.append(["engine1", variables.screen_width/2, a+variables.numofparts*128])
     #variables.parts_sim.append(["engine1_unsized", 0, 0 + variables.numofparts * 31, 31, 31, 10])
     #variables.numofparts += 1
-    engine1_rect = variables.images["engine1"].get_rect(center=pygame.mouse.get_pos())
-    variables.screen.blit(variables.images["engine1"], engine1_rect,pygame.mouse.get_pos())
+    variables.selected = "Engine1"
+    if variables.selected == "Engine1":
+        engine1rect = variables.images["engine1"].get_rect(center = (15.5, 15.5))
+        moving = False
+
+
+
 
 
 

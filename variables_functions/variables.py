@@ -97,6 +97,8 @@ physics_loading = False
 
 draggingBlockNum = 0
 
+selected = None
+
 
 
 
