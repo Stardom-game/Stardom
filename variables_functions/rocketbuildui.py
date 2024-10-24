@@ -152,7 +152,7 @@ def update():
         zoomer.blit_zoom_ui(variables.images[part[0]],
                                         (part[1], part[2]))
     if variables.moving_part != []:
-        zoomer.blit_zoom_ui(variables.images[variables.moving_part[0][0]], (variables.mousePos[0] / variables.zoomui[0], variables.mousePos[1] / variables.zoomui[1]))
+        zoomer.blit_zoom_ui(variables.images[variables.moving_part[0][0]], ((variables.mousePos[0]-variables.mousePos[0]%4) / variables.zoomui[0], (variables.mousePos[1]-variables.mousePos[1]%4) / variables.zoomui[1]))
         if not variables.leftclick: #If leftclick is just pressed
 
             part = variables.moving_part[0]

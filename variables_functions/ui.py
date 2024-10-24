@@ -60,7 +60,7 @@ def change_mode(new_mode):
 
     if variables.MODE == "main_menu":
         variables.buttons.append(
-            ui_elements.Button(variables.screen, variables.screen_width / 2 - 250, variables.screen_height / 2 - 125,
+            ui_elements.Button(variables.screen, variables.screen.get_width() / 2 - 250, variables.screen.get_height() / 2 - 125,
                                500, 250, variables.orange, variables.white, "consolas", 15, 20,
                                "", variables.images["menubutton"], "main_menu_button", menu_action, True))
     if variables.MODE == "simulation":
