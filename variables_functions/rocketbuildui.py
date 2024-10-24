@@ -6,6 +6,8 @@ import pymunk
 import keyboard
 from variables_functions import variables, physics
 from variables_functions import ui_elements, ui
+from variables_functions.variables import numofparts
+import os
 
 ##--BUILDING FUNCTIONS--##
 
@@ -70,6 +72,20 @@ def launch():
         i += 1
 def clearscreen():
     variables.parts.clear()
+    variables.numofparts = 0
+def saverocket():
+    root_dir = (os.path.abspath(os.path.join(os.getcwd())))
+    save_path = (os.path.join(root_dir, "save"))
+    with open(os.path.join(save_path, 'rocketsave.json'), 'w') as jsonfile:
+        dump = json.dumps(variables.parts)
+        json.dump(dump, jsonfile)
+def loadrocket():
+    root_dir = (os.path.abspath(os.path.join(os.getcwd())))
+    save_path = (os.path.join(root_dir, "save"))
+    with open(os.path.join(save_path, 'rocketsave.json'), 'r') as jsonfile:
+        read = json.load(jsonfile)
+        variables.parts = read
+
 
 def build_ui():
     variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width-125, 20, 100, 75,
@@ -98,9 +114,17 @@ def build_ui():
                            variables.white, variables.black, "consolas", 15, 20, "Clear",
                            variables.blank, "Clear screen", clearscreen,
                            hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
+    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width - 100, variables.screen_height - 165, 100, 75,
+                           variables.white, variables.black, "consolas", 15, 20, "Save",
+                           variables.blank, "Saverocket", saverocket,
+                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
+    variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width - 100, variables.screen_height - 255, 100, 75,
+                           variables.white, variables.black, "consolas", 15, 20, "Load",
+                           variables.blank, "Loadrocket", loadrocket,
+                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
 def update():
     variables.screen.blit(variables.images["buildbg"], (0, 0))
     for part in variables.parts:
         #variables.screen.blit(variables.images[part[0]], (variables.screen_width/2, variables.screen_height-10+variables.numofparts*31))
         variables.screen.blit(variables.images[part[0]],
-                              (part[1], part[2]))
+                                        (part[1], part[2]))
