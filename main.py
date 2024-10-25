@@ -14,6 +14,7 @@ while variables.running:
     variables.screen.fill(variables.black)
     if variables.MODE == "building":
         rocketbuildui.update()
+        ui.close()
 
     ui.update()
     ui.close()
@@ -23,6 +24,7 @@ while variables.running:
     planets.setup()
     if variables.MODE == "simulation":
         physics.update_cooldown()
+        ui.close()
         physics.update_movement()
         physics.lerp_angular_velocity()
         physics.create_parts()

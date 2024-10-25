@@ -8,7 +8,7 @@ engine1 = {
     "thrust": 100,
     "efficiency": 0.4,
     "partclass": "engine",
-    "texture": variables.images["engine1"]
+#    "texture": variables.images["engine1"]
 }
 fueltankru = {
     "mass": 15,
@@ -16,14 +16,14 @@ fueltankru = {
     "empty_mass": 1,
     "type": "liquid",
     "partclass": "fuel",
-    "texture": variables.images["fueltankru"]
+#    "texture": variables.images["fueltankru"]
 }
 commandpodussr = {
     "mass": 3,
     "cosmonauts": 2,
     "partclass": "commandmodule",
     "torque": 4500,
-    "texture": variables.images["commandpodussr"]
+#    "texture": variables.images["commandpodussr"]
 
 }
 commandpodusa = {
@@ -31,5 +31,5 @@ commandpodusa = {
     "cosmonauts": 1,
     "partclass": "commandmodule",
     "torque": 4500,
-    "texture": variables.images["commandpodusa"]
+#    "texture": variables.images["commandpodusa"]
 }

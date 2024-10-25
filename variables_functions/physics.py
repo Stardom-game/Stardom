@@ -9,7 +9,8 @@ from pygame.transform import rotate
 from pymunk.pygame_util import DrawOptions
 
 from variables_functions import variables
-from variables_functions.variables import blocks, physics_loading, joint_distances, physics_speed, cam_offset
+from variables_functions.variables import blocks, physics_loading, joint_distances, physics_speed, cam_offset, \
+    enginecounter
 from variables_functions import zoomer
 
 
@@ -333,13 +334,27 @@ def update_movement():
         #                                                                        variables.selected_obj.body.angle,
         #                                                                        variables.selected_obj.body.angular_velocity)
         #    variables.trajectories[str(variables.selected_index)] = [trajectory, trajectory_velocities]
-        if variables.keys[pygame.K_w]:
+        if variables.keys[pygame.K_SPACE]:
+            variables.enginecounter += 1
+            if variables.enginecounter%2 == 0:
+                variables.engineon = False
+            else:
+                variables.engineon = True
+        if variables.keys[pygame.K_r]:
+            variables.rcscounter += 1
+            if variables.rcscounter%2 == 0:
+                variables.rcson = False
+            else:
+                variables.rcson = True
+        if variables.engineon == True:
             move_selected("up", obj.body)
-        if variables.keys[pygame.K_s]:
+        if variables.keys[pygame.K_w] and variables.rcson == True:
+            move_selected("up", obj.body)
+        if variables.keys[pygame.K_s] and variables.engineon == False and variables.rcson == True:
             move_selected("down", obj.body)
-        if variables.keys[pygame.K_a]:
+        if variables.keys[pygame.K_a] and variables.rcson == True:
             move_selected("left", obj.body)
-        if variables.keys[pygame.K_d]:
+        if variables.keys[pygame.K_d] and variables.rcson == True:
             move_selected("right", obj.body)
         if variables.keys[pygame.K_9]:
             variables.physics_speed = 15

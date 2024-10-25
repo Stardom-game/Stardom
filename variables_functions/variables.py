@@ -3,6 +3,7 @@ import pygame, pymunk, os
 import pymunk.pygame_util
 from select import select
 import json
+from variables_functions import  parts_info
 
 #from pymunk.examples.arrows import height
 
@@ -148,3 +149,9 @@ moving = False
 parts = []
 parts_sim = []
 currentrocket_mass = 0
+numofengine1 = 0
+currentrocket_thrust = numofengine1 * parts_info.engine1["thrust"]
+engineon = False
+enginecounter = 0
+rcson = False
+rcscounter = 0

@@ -8,7 +8,8 @@ from variables_functions import variables, physics
 from variables_functions import ui_elements, ui, zoomer
 from variables_functions import parts_info
 from variables_functions.parts_info import fueltankru, commandpodussr, commandpodusa
-from variables_functions.variables import numofparts, num_of_rockets, moving_part, moving, snappedMousePos, parts
+from variables_functions.variables import numofparts, num_of_rockets, moving_part, moving, snappedMousePos, parts, \
+    numofengine1, currentrocket_mass, currentrocket_thrust
 import os
 
 
@@ -32,6 +33,7 @@ def make_fueltank():
 def make_engine1():
     variables.moving_part = [["engine1", "mouseX", "mouseY"], ["engine1", "mouseX", "mouseY", 31, 31, 10]]
     variables.currentrocket_mass += parts_info.engine1["mass"]
+    variables.numofengine1 = numofengine1+1
 def make_commandpodusa():
     variables.moving_part = [["commandpodusa", "mouseX", "mouseY"], ["commandpodusa", "mouseX", "mouseY", 31, 31, 10]]
     variables.currentrocket_mass += parts_info.commandpodusa["mass"]
@@ -59,23 +61,26 @@ def compound_rocket_img():
     return out_img
 
 def launch():
-    ui.change_mode("simulation")
+    if variables.currentrocket_mass > variables.numofengine1*parts_info.engine1["thrust"]:
+        pass
+    else:
+        ui.change_mode("simulation")
     #
-    rocket_dimensions = get_dimensions_of_rocket()
-    variables.images["rocket"] = compound_rocket_img()
-    #physics.create_block("rocket", 750,400,rocket_dimensions[0], rocket_dimensions[1], 30, 0, 0)
-    original_part = None
-    i = 0
-    for part in variables.parts_sim:
+        rocket_dimensions = get_dimensions_of_rocket()
+        variables.images["rocket"] = compound_rocket_img()
+        #physics.create_block("rocket", 750,400,rocket_dimensions[0], rocket_dimensions[1], 30, 0, 0)
+        original_part = None
+        i = 0
+        for part in variables.parts_sim:
 
-        block_id = physics.create_block(part[0], 750+part[1], 350+part[2], part[3], part[4], part[5],0, 0)
-        block = variables.blocks[block_id]
-        if i == 0:
-            original_part = block
-        else:
-            physics.create_joint(block, original_part)
-        i += 1
-    variables.num_of_rockets += 1
+            block_id = physics.create_block(part[0], 750+part[1], 350+part[2], part[3], part[4], part[5],0, 0)
+            block = variables.blocks[block_id]
+            if i == 0:
+                original_part = block
+            else:
+                physics.create_joint(block, original_part)
+            i += 1
+        variables.num_of_rockets += 1
 def clearscreen():
     variables.parts.clear()
     variables.numofparts = 0
