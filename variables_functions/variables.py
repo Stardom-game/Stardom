@@ -147,3 +147,4 @@ moving_part = []
 moving = False
 parts = []
 parts_sim = []
+currentrocket_mass = 0

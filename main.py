@@ -5,7 +5,7 @@ import pygame, pymunk, time
 import keyboard
 from pymunk.pygame_util import DrawOptions
 
-from variables_functions import variables, ui, physics, serialiser, planets, rocketbuildui, camera
+from variables_functions import variables, ui, physics, serialiser, planets, rocketbuildui, camera, ui_elements
 from pygame.locals import *
 
 #physics.create_boundaries(variables.space, variables.screen_width, variables.screen_height)

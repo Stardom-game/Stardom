@@ -6,11 +6,17 @@ import pymunk
 import keyboard
 from variables_functions import variables, physics
 from variables_functions import ui_elements, ui, zoomer
-from variables_functions.variables import numofparts, num_of_rockets, moving_part, moving, snappedMousePos
+from variables_functions import parts_info
+from variables_functions.parts_info import fueltankru, commandpodussr, commandpodusa
+from variables_functions.variables import numofparts, num_of_rockets, moving_part, moving, snappedMousePos, parts
 import os
 
 
 ##--BUILDING FUNCTIONS--##
+pygame.freetype.init()
+font = pygame.freetype.SysFont("Consolas", 15)
+
+
 
 if len(variables.parts) == 0:
     a = 50
@@ -18,15 +24,17 @@ else:
     a = 0
 def make_ussrcommandpod():
     variables.moving_part = [["commandpodussr", "mouseX", "mouseY"], ["commandpodussr", "mouseX", "mouseY", 31, 31, 10]]
-
+    variables.currentrocket_mass += parts_info.commandpodussr["mass"]
 def make_fueltank():
     variables.moving_part = [["fueltankru", "mouseX", "mouseY"], ["fueltankru", "mouseX", "mouseY", 31, 31, 10]]
+    variables.currentrocket_mass += parts_info.fueltankru["mass"]
 
 def make_engine1():
     variables.moving_part = [["engine1", "mouseX", "mouseY"], ["engine1", "mouseX", "mouseY", 31, 31, 10]]
-
+    variables.currentrocket_mass += parts_info.engine1["mass"]
 def make_commandpodusa():
     variables.moving_part = [["commandpodusa", "mouseX", "mouseY"], ["commandpodusa", "mouseX", "mouseY", 31, 31, 10]]
+    variables.currentrocket_mass += parts_info.commandpodusa["mass"]
 
 def back():
     ui.change_mode("main_menu")
@@ -71,6 +79,7 @@ def launch():
 def clearscreen():
     variables.parts.clear()
     variables.numofparts = 0
+    variables.currentrocket_mass = 0
 def saverocket():
     root_dir = (os.path.abspath(os.path.join(os.getcwd())))
     save_path = (os.path.join(root_dir, "save"))
@@ -88,6 +97,8 @@ def zoom_in():
 def zoom_out():
     if variables.zoomui[0] > 0.4:
         variables.zoomui = (variables.zoomui[0] - 0.4, variables.zoomui[1] - 0.4)
+def empty():
+    pass
 def build_ui():
     variables.buttons.append(ui_elements.Button(variables.screen, variables.screen_width-125, 20, 100, 75,
                             variables.white, variables.black, "consolas", 15, 20, "<",
@@ -147,6 +158,15 @@ def build_ui():
 def update():
     variables.screen.blit(pygame.transform.scale(variables.images["buildbg"], (variables.screen.get_width(), variables.screen.get_height())), (0, 0))
     variables.screen.blit(pygame.transform.scale(variables.images["sidebarbuildmenu"], (140, 3000)), (0, 0))
+
+    variables.buttons.append(
+        ui_elements.Button(variables.screen, variables.screen.get_width()/2-15,
+                           variables.screen.get_height() - 30,
+                           30, 30,
+                           variables.white, variables.black, "consolas", 15, 20, str(variables.currentrocket_mass),
+                           variables.blank, "showmass", empty,
+                           hide_fill=False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5))
+
     for part in variables.parts:
         #variables.screen.blit(variables.images[part[0]], (variables.screen_width/2, variables.screen_height-10+variables.numofparts*31))
         zoomer.blit_zoom_ui(variables.images[part[0]],
