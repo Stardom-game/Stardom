@@ -3,33 +3,36 @@
 # efficiency tonnes of fuel per second
 
 from variables_functions import variables
-engine1 = {
-    "mass": 4,
-    "thrust": 100,
-    "efficiency": 0.4,
-    "partclass": "engine",
-#    "texture": variables.images["engine1"]
-}
-fueltankru = {
-    "mass": 15,
-    "fuel_mass": 14,
-    "empty_mass": 1,
-    "type": "liquid",
-    "partclass": "fuel",
-#    "texture": variables.images["fueltankru"]
-}
-commandpodussr = {
-    "mass": 3,
-    "cosmonauts": 2,
-    "partclass": "commandmodule",
-    "torque": 4500,
-#    "texture": variables.images["commandpodussr"]
 
-}
-commandpodusa = {
-    "mass": 3,
-    "cosmonauts": 1,
-    "partclass": "commandmodule",
-    "torque": 4500,
-#    "texture": variables.images["commandpodusa"]
+
+parts = {
+    "engine1": {
+        "width": 32,
+        "height": 32,
+        "mass": 4,
+        "image": variables.images["engine1"],
+        "class": "engine",
+        "thrust": 100,
+    },
+    "fueltankru": {
+        "width": 32,
+        "height": 32,
+        "mass": 8,
+        "image": variables.images["fueltankru"],
+        "class": "fuel"
+    },
+    "commandpodussr": {
+        "width": 32,
+        "height": 32,
+        "mass": 4,
+        "image": variables.images["commandpodussr"],
+        "class": "control"
+    },
+    "commandpodusa": {
+        "width": 32,
+        "height": 32,
+        "mass": 4,
+        "image": variables.images["commandpodusa"],
+        "class": "control"
+    }
 }

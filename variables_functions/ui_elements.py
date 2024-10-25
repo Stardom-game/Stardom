@@ -6,7 +6,7 @@ pygame.freetype.init()
 class Button:
     def __init__(self, screen, x, y, width, height,
                  color, textcolor, font, fontsize, roundedness, text,
-                 image, name, assigned_function, hide_fill = False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5):
+                 image, name, assigned_function, function_params=None, hide_fill = False, outline=False, outlinecolor=(255, 255, 255), outlinethickness=5):
         pygame.font.init()
         self.x = x
         self.y = y
@@ -30,6 +30,7 @@ class Button:
         self.outlinethickness = outlinethickness
         self.name = name
         self.assigned_function = assigned_function
+        self.function_params = function_params
         self.just_pressed = False
         self.hide_fill = hide_fill
 
@@ -61,7 +62,10 @@ class Button:
 
             if not self.just_pressed:
                 self.just_pressed = True
-                self.assigned_function()
+                if self.function_params == None:
+                    self.assigned_function()
+                else:
+                    self.assigned_function(self.function_params)
         else:
             #print(variables.mouseRect.colliderect(self.buttonrect))
             self.just_pressed = False

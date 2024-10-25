@@ -62,21 +62,21 @@ def change_mode(new_mode):
         variables.buttons.append(
             ui_elements.Button(variables.screen, variables.screen.get_width() / 2 - 250, variables.screen.get_height() / 2 - 125,
                                500, 250, variables.orange, variables.white, "consolas", 15, 20,
-                               "", variables.images["menubutton"], "main_menu_button", menu_action, True))
+                               "", variables.images["menubutton"], "main_menu_button", menu_action, None,True))
     if variables.MODE == "simulation":
         variables.buttons.append(
             ui_elements.Button(variables.screen, 100, 0,
                                200, 100, variables.orange, variables.white, "consolas", 15, 20,
-                               "save", variables.images["blank"], "save_button", serialiser.save, False, True,
+                               "save", variables.images["blank"], "save_button", serialiser.save, None,False, True,
                                variables.white))
         variables.buttons.append(
             ui_elements.Button(variables.screen, 400, 0,
                                200, 100, variables.orange, variables.white, "consolas", 15, 20,
-                               "load", variables.images["blank"], "load_button", serialiser.load, False, True, variables.white))
+                               "load", variables.images["blank"], "load_button", serialiser.load, None,False, True, variables.white))
         variables.buttons.append(
             ui_elements.Button(variables.screen, 700, 0,
                                200, 100, variables.orange, variables.white, "consolas", 15, 20,
-                               "build", variables.images["blank"], "startbuild_button", build_action, False, True, variables.white))
+                               "build", variables.images["blank"], "startbuild_button", build_action, None,False, True, variables.white))
 
     if variables.MODE == "building":
 
