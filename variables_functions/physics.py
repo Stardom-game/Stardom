@@ -12,6 +12,7 @@ from variables_functions import variables
 from variables_functions.variables import blocks, physics_loading, joint_distances, physics_speed, cam_offset, \
     prev_leftclick
 from variables_functions import zoomer
+
 from variables_functions import rocketbuildui
 
 
@@ -362,10 +363,10 @@ def update_movement():
         #                                                                        variables.selected_obj.body.angle,
         #                                                                        variables.selected_obj.body.angular_velocity)
         #    variables.trajectories[str(variables.selected_index)] = [trajectory, trajectory_velocities]
-        if variables.keys[pygame.K_SPACE] and variables.space_key_last_pressed != variables.keys[pygame.K_e]:
+        if variables.keys[pygame.K_SPACE] and variables.space_key_last_pressed != variables.keys[pygame.K_SPACE]:
             variables.engineon = not variables.engineon
             print("engine on")
-        variables.space_key_last_pressed = variables.keys[pygame.K_e]
+        variables.space_key_last_pressed = variables.keys[pygame.K_SPACE]
         if variables.keys[pygame.K_r] and variables.r_key_last_pressed != variables.keys[pygame.K_r]:
             variables.rcson = not variables.rcson
         variables.r_key_last_pressed = variables.keys[pygame.K_r]
@@ -383,18 +384,6 @@ def update_movement():
         if variables.keys[pygame.K_9]:
             variables.physics_speed = 15
             i = 0
-
-        if variables.keys[pygame.K_SPACE] == True:
-            i = 0
-            for part in variables.parts:
-
-                block_id = physics.create_block(part[0], 750 + part[1], 350 + part[2], part[3], part[4], part[5], 0, 0)
-                block = variables.blocks[block_id]
-                if i == 0:
-                    original_part = block
-                else:
-                    physics.create_joint(block, original_part)
-                i += 1
 
         if variables.keys[pygame.K_1]:
             i = 0
