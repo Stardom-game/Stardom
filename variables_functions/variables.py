@@ -7,7 +7,7 @@ import json
 #from pymunk.examples.arrows import height
 
 MODE = "main_menu"
-zoom = (1,1)
+zoom = (0.01, 0.01)
 zoomui = (3,3)
 cam_offset = (700,100)
 dt = 0
@@ -73,17 +73,19 @@ images = {
     "blank": pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha(),
     "wood": pygame.image.load(os.path.join(root_dir, "images", "wood.png")).convert_alpha(),
     "stone": pygame.image.load(os.path.join(root_dir, "images", "stone.png")).convert_alpha(),
-    "planet": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(), (10000, 10000)),
+    "planet": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(), (9999, 9999)),
     "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
-    "commandpodbutton": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(), (32, 32)),
-    "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(), (32, 32)),
-    "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (32, 32)),
-    "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (32, 32)),
+    "commandpodbutton": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(), (31, 32)),
+    "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(), (31, 32)),
+    "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (31, 32)),
+    "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (31, 32)),
     "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
     "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha(),
-    "commandpodusa": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(), (32, 32)),
+    "commandpodusa": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(), (31, 32)),
     "sidebarbuildmenu": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "sidebarbuildmenu.png")).convert_alpha(), (91, 3000)),
-    "decoupler": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "decoupler.png")).convert_alpha(), (32, 4)),
+    "parachuteclosed": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "parachute(closed).png")).convert_alpha(), (31, 32)),
+    "parachuteopen": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "parachute(open).png")).convert_alpha(), (31, 32)),
+    "probecore": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "probecore.png")).convert_alpha(), (31, 32)),
 
 }
 blank = pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha()
@@ -148,8 +150,6 @@ moving_part = []
 moving = False
 parts = []
 parts_sim = []
-parts_blocks = []
-parts_blocks_ids = []
 rocket_mass = 0
 rocket_thrust = 0
 engineon = False
