@@ -10,6 +10,7 @@ from variables_functions import parts_info
 import os
 
 
+partslist = []
 ##--BUILDING FUNCTIONS--##
 pygame.freetype.init()
 font = pygame.freetype.SysFont("Consolas", 15)
@@ -24,6 +25,8 @@ else:
 def make_part(part):
     variables.moving_part = [part, "mouseX", "mouseY", parts_info.parts[part]["width"], parts_info.parts[part]["height"], parts_info.parts[part]["mass"]]
     variables.rocket_mass += parts_info.parts[part]["mass"]
+    partslist.append(part)
+
     if parts_info.parts[part]["class"] == "engine":
         variables.rocket_thrust += parts_info.parts[part]["thrust"]
 def back():
@@ -59,7 +62,14 @@ def calc_thrust():
         if part_data["class"] == "engine":
             variables.rocket_thrust += part_data["thrust"]
 def launch():
-    if variables.rocket_mass > variables.rocket_thrust:
+    keyforlaunch = False
+    for part in variables.parts:
+        part_name = part[0]
+        part_data = parts_info.parts[part_name]
+        if part_data["class"] == "control":
+            keyforlaunch = True
+
+    if variables.parts[len(variables.parts)-1] == "engine1" and variables.rocket_mass > variables.rocket_thrust and keyforlaunch:
         pass
     else:
         ui.change_mode("simulation")
@@ -73,13 +83,12 @@ def launch():
 
             block_id = physics.create_block(part[0], 750+part[1], 350+part[2], part[3], part[4], part[5],0, 0)
             block = variables.blocks[block_id]
-            variables.parts_blocks.append(block)
-            if original_part != None:
+            if i == 0:
+                original_part = block
+            else:
                 physics.create_joint(block, original_part)
-            original_part = block
             i += 1
         variables.num_of_rockets += 1
-
 def clearscreen():
     variables.parts.clear()
     variables.numofparts = 0
@@ -166,7 +175,7 @@ def update():
         zoomer.blit_zoom_ui(variables.images[part[0]],
                                         (part[1], part[2]))
     if variables.moving_part != []:
-        variables.snappedMousePos = variables.mousePos[0]//4*4, variables.mousePos[1]//4*4
+        variables.snappedMousePos = variables.mousePos[0]//8*8, variables.mousePos[1]//8*8
         zoomer.blit_zoom_ui(variables.images[variables.moving_part[0]], ((variables.snappedMousePos[0]) // variables.zoomui[0], (variables.snappedMousePos[1]) // variables.zoomui[1]))
         if not variables.leftclick: #If leftclick is just pressed
 
