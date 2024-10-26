@@ -9,8 +9,10 @@ from pygame.transform import rotate
 from pymunk.pygame_util import DrawOptions
 
 from variables_functions import variables
-from variables_functions.variables import blocks, physics_loading, joint_distances, physics_speed, cam_offset
+from variables_functions.variables import blocks, physics_loading, joint_distances, physics_speed, cam_offset, \
+    prev_leftclick
 from variables_functions import zoomer
+from variables_functions import rocketbuildui
 
 
 def ballistics(current_altitude, velocity, angle, acceleration):
@@ -88,11 +90,20 @@ def create_joint(block1, block2):
     block1[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
     block2[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
     variables.joints.append([block1, block2, block1[1].body.position - block2[1].body.position])
+    print(variables.joints)
     #variables.joints_in_space.append(new_joint)
    # variables.rot_joints.append([block1, block2])
    # variables.rot_joints_in_space.append(new_rot_joint)
     #variables.space.add(new_joint)
    # variables.space.add(new_rot_joint)
+
+def remove_joint(block1, block2):
+
+    block1[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
+    block2[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
+    variables.joints.remove([block1, block2, block1[1].body.position - block2[1].body.position])
+    print(variables.joints)
+
 def get_save_data():
     data = []
     for obj in blocks.values():
@@ -351,10 +362,10 @@ def update_movement():
         #                                                                        variables.selected_obj.body.angle,
         #                                                                        variables.selected_obj.body.angular_velocity)
         #    variables.trajectories[str(variables.selected_index)] = [trajectory, trajectory_velocities]
-        if variables.keys[pygame.K_SPACE] and variables.space_key_last_pressed != variables.keys[pygame.K_SPACE]:
+        if variables.keys[pygame.K_SPACE] and variables.space_key_last_pressed != variables.keys[pygame.K_e]:
             variables.engineon = not variables.engineon
             print("engine on")
-        variables.space_key_last_pressed = variables.keys[pygame.K_SPACE]
+        variables.space_key_last_pressed = variables.keys[pygame.K_e]
         if variables.keys[pygame.K_r] and variables.r_key_last_pressed != variables.keys[pygame.K_r]:
             variables.rcson = not variables.rcson
         variables.r_key_last_pressed = variables.keys[pygame.K_r]
@@ -373,14 +384,16 @@ def update_movement():
             variables.physics_speed = 15
             i = 0
 
-            for block in variables.blocks.values():
+        if variables.keys[pygame.K_SPACE] == True:
+            i = 0
+            for part in variables.parts:
 
-                body = block[1].body
-                if str(i) in variables.trajectories.keys():
-
-                    variables.trajectory_follows_indexes[str(i)] = closest_point(body.position, variables.trajectories[str(i)][0])
-                    variables.trajectory_follows[str(i)] = variables.trajectories[str(i)][0][variables.trajectory_follows_indexes[str(i)]]
-
+                block_id = physics.create_block(part[0], 750 + part[1], 350 + part[2], part[3], part[4], part[5], 0, 0)
+                block = variables.blocks[block_id]
+                if i == 0:
+                    original_part = block
+                else:
+                    physics.create_joint(block, original_part)
                 i += 1
 
         if variables.keys[pygame.K_1]:

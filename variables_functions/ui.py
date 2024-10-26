@@ -11,7 +11,7 @@ def close():
         if event.type == pygame.QUIT:
             variables.running = False
 def menu_action():
-    change_mode("simulation")
+    change_mode("building")
     
 def build_action():
     change_mode("building")    

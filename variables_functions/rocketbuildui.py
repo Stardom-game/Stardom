@@ -10,6 +10,7 @@ from variables_functions import parts_info
 import os
 
 
+partslist = []
 ##--BUILDING FUNCTIONS--##
 pygame.freetype.init()
 font = pygame.freetype.SysFont("Consolas", 15)
@@ -24,6 +25,8 @@ else:
 def make_part(part):
     variables.moving_part = [part, "mouseX", "mouseY", parts_info.parts[part]["width"], parts_info.parts[part]["height"], parts_info.parts[part]["mass"]]
     variables.rocket_mass += parts_info.parts[part]["mass"]
+    partslist.append(part)
+
     if parts_info.parts[part]["class"] == "engine":
         variables.rocket_thrust += parts_info.parts[part]["thrust"]
 def back():
@@ -59,7 +62,14 @@ def calc_thrust():
         if part_data["class"] == "engine":
             variables.rocket_thrust += part_data["thrust"]
 def launch():
-    if variables.rocket_mass > variables.rocket_thrust:
+    keyforlaunch = False
+    for part in variables.parts:
+        part_name = part[0]
+        part_data = parts_info.parts[part_name]
+        if part_data["class"] == "control":
+            keyforlaunch = True
+
+    if variables.parts[len(variables.parts)-1] == "engine1" and variables.rocket_mass > variables.rocket_thrust and keyforlaunch:
         pass
     else:
         ui.change_mode("simulation")

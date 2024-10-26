@@ -50,4 +50,18 @@ parts = {
         "image": variables.images["parachuteclosed"],
         "class": "aerodynamics"
     },
+    "stageseparator": {
+        "width": 31,
+        "height": 5,
+        "mass": 1,
+        "image": variables.images["stageseparator"],
+        "class": "staging"
+    },
+    "nosecone": {
+        "width": 31,
+        "height": 32,
+        "mass": 1.5,
+        "image": variables.images["nosecone"],
+        "class": "aerodynamics"
+    }
 }
