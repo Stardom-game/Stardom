@@ -34,5 +34,12 @@ parts = {
         "mass": 4,
         "image": variables.images["commandpodusa"],
         "class": "control"
+    },
+    "decoupler": {
+        "width": 32,
+        "height": 4,
+        "mass": 4,
+        "image": variables.images["decoupler"],
+        "class": "decouple"
     }
 }

@@ -81,18 +81,20 @@ def create_block(image, x, y, width, height, mass, elasticity, rotation=0, overr
     return str(block_value)
 
 def create_joint(block1, block2):
-    #new_joint = pymunk.constraints.PivotJoint(block1[1].body, block2[1].body, block1[1].body.position)
-    #new_joint.collide_bodies = False
-    #new_rot_joint = pymunk.constraints.GearJoint(block1[1].body, block2[1].body, 0, 1)
-    #new_rot_joint.collide_bodies = False
-    block1[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
-    block2[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
+    #block1[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
+    #block2[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
     variables.joints.append([block1, block2, block1[1].body.position - block2[1].body.position])
-    #variables.joints_in_space.append(new_joint)
-   # variables.rot_joints.append([block1, block2])
-   # variables.rot_joints_in_space.append(new_rot_joint)
-    #variables.space.add(new_joint)
-   # variables.space.add(new_rot_joint)
+def remove_joint(block1, block2):
+    variables.joints.remove([block1, block2, block1[1].body.position - block2[1].body.position])
+def remove_joint_from_block(block1):
+    for joint in variables.joints:
+        if joint[0] == block1:
+            variables.joints.remove(joint)
+            break
+def decouple():
+    for block in variables.parts_blocks:
+        if block[0] == "decoupler":
+            remove_joint_from_block(block)
 def get_save_data():
     data = []
     for obj in blocks.values():
@@ -369,6 +371,8 @@ def update_movement():
                 move_selected("left", obj.body)
             if variables.keys[pygame.K_d] and variables.rcson == True:
                 move_selected("right", obj.body)
+        if variables.keys[pygame.K_m]:
+            decouple()
         if variables.keys[pygame.K_9]:
             variables.physics_speed = 15
             i = 0

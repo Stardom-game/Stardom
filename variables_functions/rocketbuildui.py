@@ -73,12 +73,13 @@ def launch():
 
             block_id = physics.create_block(part[0], 750+part[1], 350+part[2], part[3], part[4], part[5],0, 0)
             block = variables.blocks[block_id]
-            if i == 0:
-                original_part = block
-            else:
+            variables.parts_blocks.append(block)
+            if original_part != None:
                 physics.create_joint(block, original_part)
+            original_part = block
             i += 1
         variables.num_of_rockets += 1
+
 def clearscreen():
     variables.parts.clear()
     variables.numofparts = 0
@@ -165,7 +166,7 @@ def update():
         zoomer.blit_zoom_ui(variables.images[part[0]],
                                         (part[1], part[2]))
     if variables.moving_part != []:
-        variables.snappedMousePos = variables.mousePos[0]//8*8, variables.mousePos[1]//8*8
+        variables.snappedMousePos = variables.mousePos[0]//4*4, variables.mousePos[1]//4*4
         zoomer.blit_zoom_ui(variables.images[variables.moving_part[0]], ((variables.snappedMousePos[0]) // variables.zoomui[0], (variables.snappedMousePos[1]) // variables.zoomui[1]))
         if not variables.leftclick: #If leftclick is just pressed
 
