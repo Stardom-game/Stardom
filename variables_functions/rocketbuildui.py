@@ -31,24 +31,38 @@ def make_part(part):
         variables.rocket_thrust += parts_info.parts[part]["thrust"]
 def back():
     ui.change_mode("main_menu")
-def get_dimensions_of_rocket():
-    min_height = 0
-    min_width = 0
+def get_dimensions_of_rocket(get_min=False):
+    max_height = 0
+    min_height = 9999
+    max_width = 0
+    min_width = 9999
     for part in variables.parts:
-        if part[1] + part[3] > min_width:
+
+        if part[1] + part[3] > max_width: #position + part_width
             part_pos_width = part[1] + part[3]
-            min_width = part_pos_width
-        if part[2] + part[4] > min_height:
+            max_width = part_pos_width
+        if part[1] < min_width: #position
+            part_pos_width2 = part[1]
+            min_width = part_pos_width2
+        if part[2] + part[4] > max_height:
             part_pos_height = part[2] + part[4]
-            min_height = part_pos_height
-    return [min_width, min_height]
+            max_height = part_pos_height
+        if part[2] < min_height:
+            part_pos_height2 = part[2]
+            min_height = part_pos_height2
+    if not get_min:
+        return [max_width-min_width, max_height-min_height]
+    else:
+        return [min_width, min_height]
+
 def compound_rocket_img():
     rocket_dims = get_dimensions_of_rocket()
+    rocket_pos = get_dimensions_of_rocket(True)
     out_img = pygame.Surface((rocket_dims[0], rocket_dims[1]), pygame.SRCALPHA)
 
     for part in variables.parts:
-        out_img.blit(variables.images[part[0]], (part[1], part[2]))
-    #pygame.image.save(out_img, "test.png")
+        out_img.blit(variables.images[part[0]], (part[1] - rocket_pos[0], part[2] - rocket_pos[1]))
+    pygame.image.save(out_img, "test.png")
     return out_img
 def calc_mass():
     variables.rocket_mass = 0
@@ -76,18 +90,18 @@ def launch():
     #
         rocket_dimensions = get_dimensions_of_rocket()
         variables.images["rocket"] = compound_rocket_img()
-        #physics.create_block("rocket", 750,400,rocket_dimensions[0], rocket_dimensions[1], 30, 0, 0)
+        physics.create_block("rocket", 750,400,rocket_dimensions[0], rocket_dimensions[1], 30, 0, 0)
         original_part = None
         i = 0
-        for part in variables.parts:
+        #for part in variables.parts:
 
-            block_id = physics.create_block(part[0], 750+part[1], 350+part[2], part[3], part[4], part[5],0, 0)
-            block = variables.blocks[block_id]
-            if i == 0:
-                original_part = block
-            else:
-                physics.create_joint(block, original_part)
-            i += 1
+        #    block_id = physics.create_block(part[0], 750+part[1], 350+part[2], part[3], part[4], part[5],0, 0)
+        #    block = variables.blocks[block_id]
+        #    if i == 0:
+        #        original_part = block
+        #    else:
+        #        physics.create_joint(block, original_part)
+        #    i += 1
         variables.num_of_rockets += 1
 def clearscreen():
     variables.parts.clear()

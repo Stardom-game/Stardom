@@ -6,29 +6,29 @@ from variables_functions import variables
 
 
 parts = {
-"commandpodussr": {
-        "width": 31,
+    "commandpodussr": {
+        "width": 32,
         "height": 32,
         "mass": 4,
         "image": variables.images["commandpodussr"],
         "class": "control"
     },
     "commandpodusa": {
-        "width": 31,
+        "width": 32,
         "height": 32,
         "mass": 4,
         "image": variables.images["commandpodusa"],
         "class": "control"
     },
-"probecore": {
-        "width": 31,
+    "probecore": {
+        "width": 32,
         "height": 32,
         "mass": 2,
         "image": variables.images["probecore"],
         "class": "control"
     },
     "engine1": {
-        "width": 31,
+        "width": 32,
         "height": 32,
         "mass": 4,
         "image": variables.images["engine1"],
@@ -36,7 +36,7 @@ parts = {
         "thrust": 100,
     },
     "fueltankru": {
-        "width": 31,
+        "width": 32,
         "height": 32,
         "mass": 8,
         "image": variables.images["fueltankru"],
@@ -44,21 +44,21 @@ parts = {
     },
 
     "parachuteclosed": {
-        "width": 31,
+        "width": 32,
         "height": 32,
         "mass": 0.5,
         "image": variables.images["parachuteclosed"],
         "class": "aerodynamics"
     },
     "stageseparator": {
-        "width": 31,
-        "height": 5,
+        "width": 32,
+        "height": 4,
         "mass": 1,
         "image": variables.images["stageseparator"],
         "class": "staging"
     },
     "nosecone": {
-        "width": 31,
+        "width": 32,
         "height": 32,
         "mass": 1.5,
         "image": variables.images["nosecone"],
