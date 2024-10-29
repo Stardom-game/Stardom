@@ -15,12 +15,12 @@ def menu_action():
     pygame.mixer.music.stop()
     pygame.mixer.music.unload()
     variables.musiccounter = 0
-    pygame.mixer.music.load(variables.sounds["VAB"], "mp3")
+    pygame.mixer.music.load(variables.sounds["VAB"], "wav")
     pygame.mixer.music.play(loops=-1)
     
 def build_action():
     change_mode("building")
-    pygame.mixer.music.load(variables.sounds["VAB"], "mp3")
+    pygame.mixer.music.load(variables.sounds["VAB"], "wav")
     pygame.mixer.music.play()
     variables.musiccounter = 0
 
