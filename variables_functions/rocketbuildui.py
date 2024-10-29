@@ -70,7 +70,7 @@ def launch():
             keyforlaunch = True
     pygame.mixer.music.stop()
     pygame.mixer.music.unload()
-    pygame.mixer.music.load(variables.sounds["simulation"], "wav")
+    pygame.mixer.music.load(variables.sounds["simulation"], "mp3")
     pygame.mixer.music.play(loops=-1)
     if len(variables.parts) != 0 and variables.parts[len(variables.parts)-1] == "engine1" and variables.rocket_mass > variables.rocket_thrust and keyforlaunch:
         pass
