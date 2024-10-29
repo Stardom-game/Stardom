@@ -161,9 +161,9 @@ space_key_last_pressed = False
 r_key_last_pressed = False
 numberofparts = []
 sounds = {
-    "main": "audio/mainost.mp3",
-    "VAB" : "audio/buildost.mp3",
-    "simulation" : "audio/piracy.mp3"
+    "main": "audio/mainost.wav",
+    "VAB" : "audio/buildost.wav",
+    "simulation" : "audio/piracy.wav"
 }
 musiccounter = 0
 
