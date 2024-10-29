@@ -1,7 +1,7 @@
 import pygame
 import keyboard
 from variables_functions import variables
-from variables_functions import ui_elements
+from variables_functions import ui_elements, physics
 from variables_functions import serialiser, rocketbuildui
 import os
 
@@ -11,10 +11,19 @@ def close():
         if event.type == pygame.QUIT:
             variables.running = False
 def menu_action():
-    change_mode("simulation")
+    change_mode("building")
+    pygame.mixer.music.stop()
+    pygame.mixer.music.unload()
+    variables.musiccounter = 0
+    pygame.mixer.music.load(variables.sounds["VAB"], "wav")
+    pygame.mixer.music.play(loops=-1)
     
 def build_action():
-    change_mode("building")    
+    change_mode("building")
+    pygame.mixer.music.load(variables.sounds["VAB"], "wav")
+    pygame.mixer.music.play()
+    variables.musiccounter = 0
+
 
 def setup():
     pygame.display.set_caption("Stardom", "-test version 1")
@@ -26,6 +35,8 @@ def update():
 
 def placeholder():
     pass
+
+
 
 def update_mouse():
     variables.mouseX, variables.mouseY = pygame.mouse.get_pos()
@@ -58,23 +69,23 @@ def change_mode(new_mode):
 
     if variables.MODE == "main_menu":
         variables.buttons.append(
-            ui_elements.Button(variables.screen, variables.screen_width / 2 - 250, variables.screen_height / 2 - 125,
+            ui_elements.Button(variables.screen, variables.screen.get_width() / 2 - 250, variables.screen.get_height() / 2 - 125,
                                500, 250, variables.orange, variables.white, "consolas", 15, 20,
-                               "", variables.images["menubutton"], "main_menu_button", menu_action, True))
+                               "", variables.images["menubutton"], "main_menu_button", menu_action, None,True))
     if variables.MODE == "simulation":
         variables.buttons.append(
             ui_elements.Button(variables.screen, 100, 0,
                                200, 100, variables.orange, variables.white, "consolas", 15, 20,
-                               "save", variables.images["blank"], "save_button", serialiser.save, False, True,
+                               "save", variables.images["blank"], "save_button", serialiser.save, None,False, True,
                                variables.white))
         variables.buttons.append(
             ui_elements.Button(variables.screen, 400, 0,
                                200, 100, variables.orange, variables.white, "consolas", 15, 20,
-                               "load", variables.images["blank"], "load_button", serialiser.load, False, True, variables.white))
+                               "load", variables.images["blank"], "load_button", serialiser.load, None,False, True, variables.white))
         variables.buttons.append(
             ui_elements.Button(variables.screen, 700, 0,
                                200, 100, variables.orange, variables.white, "consolas", 15, 20,
-                               "build", variables.images["blank"], "startbuild_button", build_action, False, True, variables.white))
+                               "build", variables.images["blank"], "startbuild_button", build_action, None,False, True, variables.white))
 
     if variables.MODE == "building":
 
