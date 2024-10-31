@@ -86,10 +86,9 @@ def launch():
     pygame.mixer.music.unload()
     pygame.mixer.music.load(variables.sounds["simulation"], "wav")
     pygame.mixer.music.play(loops=-1)
-    if  "engine1" in variables.parts and variables.rocket_mass > variables.rocket_thrust and keyforlaunch:
-        pass
-    else:
+    if variables.rocket_thrust > 0 and variables.rocket_mass < variables.rocket_thrust and keyforlaunch:
         ui.change_mode("simulation")
+
     #
         rocket_dimensions = get_dimensions_of_rocket()
         variables.images["rocket"] = compound_rocket_img()
