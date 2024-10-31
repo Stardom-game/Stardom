@@ -3,6 +3,7 @@ import pygame, pymunk, os
 import pymunk.pygame_util
 from select import select
 import json
+import platform
 
 #from pymunk.examples.arrows import height
 
@@ -69,26 +70,51 @@ woodRect = pygame.rect.Rect((0,0), (16, 16))
 
 stoneRect = pygame.rect.Rect((0,16), (16, 16))
 
-images = {
-    "blank": pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha(),
-    "wood": pygame.image.load(os.path.join(root_dir, "images", "wood.png")).convert_alpha(),
-    "stone": pygame.image.load(os.path.join(root_dir, "images", "stone.png")).convert_alpha(),
-    "planet": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(), (2000, 2000)),
-    "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
-    "commandpodbutton": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(), (32, 32)),
-    "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(), (32, 32)),
-    "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (32, 32)),
-    "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (32, 32)),
-    "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
-    "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha(),
-    "commandpodusa": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(), (32, 32)),
-    "sidebarbuildmenu": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "sidebarbuildmenu.png")).convert_alpha(), (91, screen_height)),
-    "parachuteclosed": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "parachute(closed).png")).convert_alpha(), (32, 32)),
-    "parachuteopen": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "parachute(open).png")).convert_alpha(), (32, 32)),
-    "probecore": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "probecore.png")).convert_alpha(), (32, 32)),
-    "stageseparator": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "decoupler.png")).convert_alpha(), (32, 4)),
-    "nosecone": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "nosecone.png")).convert_alpha(), (32, 32)),
-}
+current_os = platform.system()
+
+if current_os == "Windows":
+    images = {
+        "blank": pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha(),
+        "wood": pygame.image.load(os.path.join(root_dir, "images", "wood.png")).convert_alpha(),
+        "stone": pygame.image.load(os.path.join(root_dir, "images", "stone.png")).convert_alpha(),
+        "planet": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(), (2000, 2000)),
+        "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
+        "commandpodbutton": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "commandpodbutton.png")).convert_alpha(), (32, 32)),
+        "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(), (32, 32)),
+        "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (32, 32)),
+        "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (32, 32)),
+        "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
+        "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha(),
+        "commandpodusa": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(), (32, 32)),
+        "sidebarbuildmenu": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "sidebarbuildmenu.png")).convert_alpha(), (91, screen_height)),
+        "parachuteclosed": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "parachute(closed).png")).convert_alpha(), (32, 32)),
+        "parachuteopen": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "parachute(open).png")).convert_alpha(), (32, 32)),
+        "probecore": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "probecore.png")).convert_alpha(), (32, 32)),
+        "stageseparator": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "decoupler.png")).convert_alpha(), (32, 4)),
+        "nosecone": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "nosecone.png")).convert_alpha(), (32, 32)),
+    }
+elif current_os == "Darwin":
+    images = {
+        "blank": pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha(),
+        "wood": pygame.image.load(os.path.join(root_dir, "images", "wood.png")).convert_alpha(),
+        "stone": pygame.image.load(os.path.join(root_dir, "images", "stone.png")).convert_alpha(),
+        "planet": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "earth.png")).convert_alpha(), (2000, 2000)),
+        "menubutton": pygame.image.load(os.path.join(root_dir, "images", "homescreen_button.png")),
+        "commandpodbutton": pygame.transform.scale(pygame.image.load("images/commandpodbutton.png").convert_alpha(), (32, 32)), # temp macos fix
+        "commandpodussr": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "ussrcapsule.png")).convert_alpha(), (32, 32)),
+        "fueltankru": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "fueltankru.png")).convert_alpha(), (32, 32)),
+        "engine1": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "engine1.png")).convert_alpha(), (32, 32)),
+        "buildbg": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "buildbg.png")).convert_alpha(), (screen_width, screen_height)),
+        "launchplatform": pygame.image.load(os.path.join(root_dir, "images", "launchplatform.png")).convert_alpha(),
+        "commandpodusa": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "usacapsule.png")).convert_alpha(), (32, 32)),
+        "sidebarbuildmenu": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "sidebarbuildmenu.png")).convert_alpha(), (91, screen_height)),
+        "parachuteclosed": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "parachute(closed).png")).convert_alpha(), (32, 32)),
+        "parachuteopen": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "parachute(open).png")).convert_alpha(), (32, 32)),
+        "probecore": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "probecore.png")).convert_alpha(), (32, 32)),
+        "stageseparator": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "decoupler.png")).convert_alpha(), (32, 4)),
+        "nosecone": pygame.transform.scale(pygame.image.load(os.path.join(root_dir, "images", "nosecone.png")).convert_alpha(), (32, 32)),
+    }
+
 blank = pygame.image.load(os.path.join(root_dir, "images", "blank.png")).convert_alpha()
 mouseX, mouseY = pygame.mouse.get_pos()
 mousePos = pygame.mouse.get_pos()
@@ -143,8 +169,14 @@ orbit_should_correct = False
 leftclick, middleclick, rightclick = False, False, False
 prev_leftclick = False
 tab_pressed = False
-commandbuttonimg = pygame.image.load("images\\commandpodbutton.png").convert_alpha()
-rocketfile = "save\\rocketsave.json"
+
+if current_os == "Windows":
+    commandbuttonimg = pygame.image.load("images\\commandpodbutton.png").convert_alpha()
+    rocketfile = "save\\rocketsave.json"
+elif current_os == "Darwin":
+    commandbuttonimg = pygame.image.load("images/commandpodbutton.png").convert_alpha()
+    rocketfile = "save/rocketsave.json"
+
 
 numofparts = 0
 moving_part = []
