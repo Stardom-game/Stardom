@@ -11,6 +11,7 @@ from pygame.locals import *
 import time
 import sys
 from tqdm import tqdm
+from datetime import datetime
 
 #! Init
 pygame.init()
@@ -27,6 +28,9 @@ def run():
             ui.close()
 
         ui.update()
+        if variables.DEBUG == True:
+            now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            print(f"DEBUG: UI Update at {now}")
         ui.close()
         ui.update_buttons()
         ui.update_mouse()
@@ -49,12 +53,19 @@ def run():
         pygame.display.update()
 
 if __name__ == "__main__":
+    if variables.DEBUG == True:
+        print("DEBUG: Not lib, running...")
     try:
+        if variables.DEBUG == True:
+            print("DEBUG: run() issued!")
         run()
     except KeyboardInterrupt:
         print("Shutting down...")
         for i in tqdm(range(20)):
             time.sleep(0.05)
+        if variables.DEBUG == True:
+            now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            print(f"DEBUG: Sys exit issued at {now}")
         sys.exit()
     except Exception as e:
         print(f"Encountered error {e}. Please add a github issue.")
