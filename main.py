@@ -19,18 +19,17 @@ pygame.mixer.music.load(variables.sounds["main"], "wav")
 pygame.mixer.music.play(loops=-1)
 #physics.create_boundaries(variables.space, variables.screen_width, variables.screen_height)
 ui.setup()
+clock = pygame.time.Clock()
 
 def run():
     while variables.running:
+        start_time = time.time()
         variables.screen.fill(variables.black)
         if variables.MODE == "building":
             rocketbuildui.update()
             ui.close()
 
         ui.update()
-        if variables.DEBUG == True:
-            now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            print(f"DEBUG: UI Update at {now}")
         ui.close()
         ui.update_buttons()
         ui.update_mouse()
@@ -51,6 +50,13 @@ def run():
             #  variables.screen.blit(variables.images["wood"], (variables.to_follow[0], variables.to_follow[1]))
 
         pygame.display.update()
+        
+        end_time = time.time()  # end time of the frame
+        frame_time = end_time - start_time
+        fps = 1 / frame_time if frame_time > 0 else 0
+        
+        if variables.DEBUG == True:
+            print(f"DEBUG: FPS - {fps:.2f}")
 
 if __name__ == "__main__":
     if variables.DEBUG == True:
