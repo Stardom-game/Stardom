@@ -194,12 +194,12 @@ def update_rot(data):
 def move_selected(mode, obj):
     obj.torque = 0
     if mode == "right":
-        obj.torque = 4500
+        obj.torque = 9500
     if mode == "left":
-        obj.torque = -4500
+        obj.torque = -9500
     if mode == "up":
         #obj.velocity += rotate_vector((0,-5), obj.angle)
-        obj.apply_force_at_local_point((0,-1000))
+        obj.apply_force_at_local_point((0,-2000))
     if mode == "down":
         obj.velocity += rotate_vector((0,5), obj.angle)
     obj = variables.blocks[str(variables.selected_index)][1]
@@ -257,7 +257,7 @@ def match_grav_accel(obj, obj_index):
                 variables.orbital_corrections[str(obj_index)][2] = True
         apply_grav_accel(obj.body, True)
 
-    # variables.trajectory_follows_indexes[str(obj_index)] -> current traj follow index
+    # variables.trajectory_follows_indexes[str(obj_index)] -> current traj follow index used in the loop
     # variables.trajectory_follows[str(obj_index)] -> current traj position to follow
     if variables.physics_speed > 1:
         if str(obj_index) in variables.trajectory_follows.keys():
@@ -289,18 +289,18 @@ def simulate_bodies(pos1, mass1, vel1, angle1, anglevel1):
     variables.simulation_velocities = []
 
     variables.simulate_frames = 10000
-    variables.simulate_per_frame =200
+    variables.simulate_per_frame =50
 
     variables.simulated_frames = 0
     variables.simulation_active = True
-    for _ in range(250):
+    for _ in range(50):
 
         apply_grav_accel(variables.simulation_body.body, True, True)
         # body1.body.velocity = (0,5)
         variables.simulation_positions.append(variables.simulation_body.body.position)
         variables.simulation_velocities.append(variables.simulation_body.body.velocity)
         if len(variables.simulation_positions) > 700 and abs(
-                distance(variables.simulation_body.body.position, variables.simulation_positions[0]) < 1):
+                distance(variables.simulation_body.body.position, variables.simulation_positions[0])) < 2:
             variables.simulation_active = False
             break
         update_trajectory_sim()
@@ -319,7 +319,7 @@ def update(physics_speed):
             #body1.body.velocity = (0,5)
             variables.simulation_positions.append(variables.simulation_body.body.position)
             variables.simulation_velocities.append(variables.simulation_body.body.velocity)
-            if len(variables.simulation_positions) > 700 and abs(distance(variables.simulation_body.body.position, variables.simulation_positions[0]) < 1):
+            if len(variables.simulation_positions) > 700 and abs(distance(variables.simulation_body.body.position, variables.simulation_positions[0])) < 2:
                 variables.simulation_active = False
                 break
             update_trajectory_sim()
@@ -385,17 +385,20 @@ def update_movement():
             variables.physics_speed = 15
             i = 0
 
-        if variables.keys[pygame.K_1]:
+        if (physics_speed <= 1 and variables.keys[pygame.K_SPACE]) or variables.keys[pygame.K_1]:
             i = 0
             for block in variables.blocks.values():
                 body = block[1].body
                 if str(i) in variables.trajectories.keys():
-                    variables.trajectory_follows[str(i)] = closest_point(body.position, variables.trajectories[str(i)][0])
+
+                    variables.trajectory_follows_indexes[str(i)] = closest_point(body.position,
+                                                                                 variables.trajectories[str(i)][0])
+                    #variables.trajectory_follows[str(i)] =
                     trajectory = variables.trajectories[str(i)][0]
                     velocities = variables.trajectories[str(i)][1]
-                    body.position = trajectory[variables.trajectory_follows[str(i)]]
-                    body.velocity = velocities[variables.trajectory_follows[str(i)]]
-                    variables.trajectory_follows_indexes[str(i)] = 0
+                    body.position = trajectory[variables.trajectory_follows_indexes[str(i)]]
+                    body.velocity = velocities[variables.trajectory_follows_indexes[str(i)]]
+
                 i += 1
             variables.physics_speed = 1
 
