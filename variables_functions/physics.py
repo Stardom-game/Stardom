@@ -6,6 +6,7 @@ import math, random, os, json, keyboard, clock
 
 from pygame import Vector2
 from pygame.transform import rotate
+from pymunk.examples.platformer import height
 from pymunk.pygame_util import DrawOptions
 
 from variables_functions import variables
@@ -82,6 +83,63 @@ def create_block(image, x, y, width, height, mass, elasticity, rotation=0, overr
     variables.newBlockCooldown = 0
 
     return str(block_value)
+def split_rocket(height, orientation):
+    s_body = variables.selected_obj.body
+    s_shape = variables.selected_obj
+    s_image = variables.images[variables.blocks[str(variables.selected_index)][0]]
+    s_rect = variables.blocks[str(variables.selected_index)][2]
+    s_width = s_rect.width
+    s_height = s_rect.height
+    s_position = s_body.position
+    s_mass = s_body.mass
+    s_angle = s_body.angle
+    s_velocity = s_body.velocity
+    #
+    #
+    if orientation == "horizontal":
+        new_width1 = s_width-height
+        new_height1 = s_height
+
+        new_width2 = 0+height
+        new_height2 = s_height
+    else:
+        new_width1 = s_width
+        new_height1 = s_height - height
+
+        new_width2 = s_width
+        new_height2 = 0 + height
+
+    new_rect1 = pygame.rect.Rect((0,0), (new_width1, new_height1))
+    if orientation != "horizontal":
+        new_rect2 = pygame.rect.Rect((s_position[0], s_position[1] + new_height2), (new_width2, new_height2))
+    else:
+        new_rect2 = pygame.rect.Rect((s_position[0] + new_width2, s_position[1]), (new_width2, new_height2))
+
+    new_image_crop1 = pygame.rect.Rect((0,0), (new_width1, new_height1))
+    if orientation != "horizontal":
+        new_image_crop2 = pygame.rect.Rect((0,0+s_height-new_height2), (new_width2, new_height2))
+    else:
+        new_image_crop2 = pygame.rect.Rect((0+s_width-new_width2, 0), (new_width2, new_height2))
+
+    new_image1 = s_image.subsurface(new_image_crop1)
+    new_image2 = s_image.subsurface(new_image_crop2)
+    variables.images["rocket"] = new_image1
+    variables.images["craft_image" + str(len(variables.blocks.keys()))] = new_image2
+    new_image2 = s_image.subsurface(new_image_crop2)
+
+    if orientation != "horizontal":
+        height_rotated1 = rotate_vector(Vector2(0, new_height2), s_angle) #The reason this is swapped is that the (position y of the top section) is (the original position y) plus (bottom section height / 2)
+        height_rotated2 = rotate_vector(Vector2(0, new_height1), s_angle)
+    else:
+        height_rotated1 = rotate_vector(Vector2(new_width2, 0),s_angle)  # The reason this is swapped is that the (position y of the top section) is (the original position y) plus (bottom section height / 2)
+        height_rotated2 = rotate_vector(Vector2(new_width1, 0), s_angle)
+    new_pos1 = s_position[0] - height_rotated1[0]/2, s_position[1] - height_rotated1[1]/2
+    new_pos2 = s_position[0] + height_rotated2[0]/2, s_position[1] + height_rotated2[1]/2
+
+    create_block("rocket", new_pos1[0], new_pos1[1], new_width1, new_height1, s_mass/2, 0, s_angle, variables.selected_index, s_velocity)
+    create_block("craft_image" + str(len(variables.blocks.keys())), new_pos2[0], new_pos2[1], new_width2, new_height2, s_mass/2, 0, s_angle, -1, s_velocity)
+    variables.space.remove(s_shape)
+    variables.space.remove(s_body)
 
 def create_joint(block1, block2):
     #new_joint = pymunk.constraints.PivotJoint(block1[1].body, block2[1].body, (block1[1].body.position+block2[1].body.position)/2)
@@ -311,6 +369,8 @@ def update_trajectory_sim():
     variables.space_trajectory.step(1/variables.fps)
 
 
+
+
 def update(physics_speed):
     #if variables.simulation_active:
     if variables.simulation_active:
@@ -385,7 +445,9 @@ def update_movement():
         if variables.keys[pygame.K_9]:
             variables.physics_speed = 15
             i = 0
-
+        if variables.keys[pygame.K_t] and variables.keys[pygame.K_t] != variables.t_key_last_pressed:
+            split_rocket(14, "horizontal")
+        variables.t_key_last_pressed = variables.keys[pygame.K_t]
         if (physics_speed <= 1 and variables.keys[pygame.K_SPACE]) or variables.keys[pygame.K_1]:
             i = 0
             for block in variables.blocks.values():

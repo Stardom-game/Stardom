@@ -190,6 +190,7 @@ rcson = False
 
 space_key_last_pressed = False
 r_key_last_pressed = False
+t_key_last_pressed = False
 numberofparts = []
 sounds = {
     "main": "audio/mainost.wav",
