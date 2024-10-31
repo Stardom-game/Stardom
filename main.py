@@ -7,7 +7,9 @@ from pymunk.pygame_util import DrawOptions
 
 from variables_functions import variables, ui, physics, serialiser, planets, rocketbuildui, camera, ui_elements
 from pygame.locals import *
-
+pygame.init()
+pygame.mixer.music.load(variables.sounds["main"], "wav")
+pygame.mixer.music.play(loops=-1)
 #physics.create_boundaries(variables.space, variables.screen_width, variables.screen_height)
 ui.setup()
 while variables.running:

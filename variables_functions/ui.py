@@ -12,9 +12,17 @@ def close():
             variables.running = False
 def menu_action():
     change_mode("building")
+    pygame.mixer.music.stop()
+    pygame.mixer.music.unload()
+    pygame.mixer.music.load(variables.sounds["VAB"], "wav")
+    pygame.mixer.music.play(loops=-1)
     
 def build_action():
-    change_mode("building")    
+    change_mode("building")
+    pygame.mixer.music.stop()
+    pygame.mixer.music.unload()
+    pygame.mixer.music.load(variables.sounds["VAB"], "wav")
+    pygame.mixer.music.play()
 
 def setup():
     pygame.display.set_caption("Stardom", "-test version 1")

@@ -82,8 +82,11 @@ def launch():
         part_data = parts_info.parts[part_name]
         if part_data["class"] == "control":
             keyforlaunch = True
-
-    if variables.parts[len(variables.parts)-1] == "engine1" and variables.rocket_mass > variables.rocket_thrust and keyforlaunch:
+    pygame.mixer.music.stop()
+    pygame.mixer.music.unload()
+    pygame.mixer.music.load(variables.sounds["simulation"], "wav")
+    pygame.mixer.music.play(loops=-1)
+    if  "engine1" in variables.parts and variables.rocket_mass > variables.rocket_thrust and keyforlaunch:
         pass
     else:
         ui.change_mode("simulation")

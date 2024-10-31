@@ -159,5 +159,9 @@ rcson = False
 space_key_last_pressed = False
 r_key_last_pressed = False
 numberofparts = []
-
+sounds = {
+    "main": "audio/mainost.wav",
+    "VAB" : "audio/buildost.wav",
+    "simulation" : "audio/piracy.wav"
+}
 
