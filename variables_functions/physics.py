@@ -204,8 +204,9 @@ def move_selected(mode, obj):
         obj.velocity += rotate_vector((0,5), obj.angle)
     obj = variables.blocks[str(variables.selected_index)][1]
     variables.orbital_corrections[str(variables.selected_index)] = [obj.body.position, obj.body.velocity, False]
-    trajs,vels = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity, obj.body.angle, obj.body.angular_velocity)
-    variables.trajectories[str(variables.selected_index)] = [trajs,vels]
+    if variables.engineon:
+        trajs,vels = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity, obj.body.angle, obj.body.angular_velocity)
+        variables.trajectories[str(variables.selected_index)] = [trajs,vels]
 def apply_grav_accel(obj, kinematic = False, timewarp_dt = False, get_vel = False):
     if not get_vel:
         last_obj_angle = obj.angle
