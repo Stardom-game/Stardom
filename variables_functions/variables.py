@@ -199,3 +199,4 @@ sounds = {
     "simulation" : "audio/piracy.wav"
 }
 
+DEBUG = True
