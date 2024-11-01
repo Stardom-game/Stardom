@@ -332,7 +332,7 @@ def move_selected(mode, obj):
     if mode == "up":
         #obj.velocity += rotate_vector((0,-5), obj.angle)
         if thrust >= mass:
-            obj.apply_force_at_local_point((0,-thrust*1030))
+            obj.apply_force_at_local_point((0,-thrust*130))
     if mode == "down":
         obj.velocity += rotate_vector((0,5), obj.angle)
     obj = variables.blocks[str(variables.selected_index)][1]
