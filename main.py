@@ -45,10 +45,8 @@ def run():
             #physics.draw(DrawOptions(variables.screen))
             camera.update()
             physics.update_screen()
-
         #if variables.to_follow != None:
             #  variables.screen.blit(variables.images["wood"], (variables.to_follow[0], variables.to_follow[1]))
-
         pygame.display.update()
         
         end_time = time.time()  # end time of the frame
@@ -67,11 +65,8 @@ if __name__ == "__main__":
         run()
     except KeyboardInterrupt:
         print("Shutting down...")
-        for i in tqdm(range(20)):
-            time.sleep(0.05)
+        time.sleep(0.05)
         if variables.DEBUG == True:
             now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             print(f"DEBUG: Sys exit issued at {now}")
         sys.exit()
-    except Exception as e:
-        print(f"Encountered error {e}. Please add a github issue.")
