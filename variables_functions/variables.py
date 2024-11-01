@@ -182,6 +182,7 @@ numofparts = 0
 moving_part = []
 moving = False
 parts = []
+parts_origin_zero = []
 parts_sim = []
 rocket_mass = 0
 rocket_thrust = 0

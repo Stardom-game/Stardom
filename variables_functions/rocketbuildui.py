@@ -74,7 +74,19 @@ def calc_thrust():
         part_name = part[0]
         part_data = parts_info.parts[part_name]
         if part_data["class"] == "engine":
-            variables.rocket_thrust += part_data["thrust"]
+            do_not_add_thrust = False
+            for part_to_check in variables.parts:
+                #This checks if each part is:
+                #1. Below the engine
+                #2. Has the same x position as the engine
+                #3. Is not an engine itself
+                #If all these conditions are satisfied, the thrust is not added on
+                part_to_check_name = part_to_check[0]
+                part_to_check_data = parts_info.parts[part_to_check_name]
+                if (part_to_check[2] > part[2] and part_to_check[1] == part[1]) and part_to_check_data["class"] != "engine":
+                    do_not_add_thrust = True
+            if not do_not_add_thrust:
+                variables.rocket_thrust += part_data["thrust"]
 def launch():
     keyforlaunch = False
     for part in variables.parts:
@@ -86,13 +98,16 @@ def launch():
     pygame.mixer.music.unload()
     pygame.mixer.music.load(variables.sounds["simulation"], "wav")
     pygame.mixer.music.play(loops=-1)
-    if variables.rocket_thrust > 0 and variables.rocket_mass < variables.rocket_thrust and keyforlaunch:
+    if variables.rocket_thrust > 0 and variables.rocket_mass <= variables.rocket_thrust and keyforlaunch:
         ui.change_mode("simulation")
 
     #
         rocket_dimensions = get_dimensions_of_rocket()
         variables.images["rocket"] = compound_rocket_img()
-        physics.create_block("rocket", 750,400,rocket_dimensions[0], rocket_dimensions[1], 30, 0, 0)
+        variables.parts_origin_zero = find_part_coords_origin(variables.parts)
+        calc_mass()
+        calc_thrust()
+        physics.create_block("rocket", 750,400,rocket_dimensions[0], rocket_dimensions[1], variables.rocket_mass, 0, 0, -1, (0,0), variables.parts_origin_zero, variables.rocket_thrust)
         original_part = None
         i = 0
         #for part in variables.parts:
@@ -105,6 +120,12 @@ def launch():
         #        physics.create_joint(block, original_part)
         #    i += 1
         variables.num_of_rockets += 1
+def find_part_coords_origin(parts):
+    out = []
+    origin_pos = get_dimensions_of_rocket(True)
+    for part in parts:
+        out.append([part[0], part[1]-origin_pos[0], part[2]-origin_pos[1], part[3], part[4], part[5]])
+    return out
 def clearscreen():
     variables.parts.clear()
     variables.numofparts = 0
@@ -121,6 +142,7 @@ def loadrocket():
     with open(os.path.join(save_path, 'rocketsave.json'), 'r') as jsonfile:
         read = json.load(jsonfile)
         variables.parts = read
+    variables.parts_origin_zero = find_part_coords_origin(variables.parts)
     calc_mass()
     calc_thrust()
 
@@ -204,4 +226,6 @@ def update():
             variables.parts.append(part)
             variables.numofparts += 1
             variables.moving_part = []
+            calc_thrust()
+
 

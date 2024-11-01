@@ -33,7 +33,7 @@ parts = {
         "mass": 4,
         "image": variables.images["engine1"],
         "class": "engine",
-        "thrust": 100,
+        "thrust": 32,
     },
     "fueltankru": {
         "width": 32,

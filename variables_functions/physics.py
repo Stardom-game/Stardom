@@ -9,7 +9,7 @@ from pygame.transform import rotate
 from pymunk.examples.platformer import height
 from pymunk.pygame_util import DrawOptions
 
-from variables_functions import variables
+from variables_functions import variables, parts_info
 from variables_functions.variables import blocks, physics_loading, joint_distances, physics_speed, cam_offset, \
     prev_leftclick
 from variables_functions import zoomer
@@ -70,7 +70,7 @@ def create_box(space, x, y, width, height, mass, elasticity, rotation = 0, circl
 
 
     return shape
-def create_block(image, x, y, width, height, mass, elasticity, rotation=0, override_id=-1, velocity = (0,0)):
+def create_block(image, x, y, width, height, mass, elasticity, rotation=0, override_id=-1, velocity = (0,0), parts_in_block=[], thrust=0):
     newBlock = create_box(variables.space, x, y, width, height, mass, elasticity, rotation, False, False, velocity)
 
     newBlockRect = pygame.rect.Rect((0, 0), (width, height))
@@ -78,18 +78,22 @@ def create_block(image, x, y, width, height, mass, elasticity, rotation=0, overr
     block_value = override_id
     if override_id == -1:
         block_value = len(variables.blocks.keys())
-    variables.blocks[str(block_value)] = [image, newBlock, newBlockRect]
+    variables.blocks[str(block_value)] = [image, newBlock, newBlockRect, parts_in_block, thrust]
     update_rot(variables.blocks)
     variables.newBlockCooldown = 0
 
     return str(block_value)
-def split_rocket(height, orientation):
+def split_rocket(height_at_sep, orientation, parts_arr):
     s_body = variables.selected_obj.body
     s_shape = variables.selected_obj
     s_image = variables.images[variables.blocks[str(variables.selected_index)][0]]
     s_rect = variables.blocks[str(variables.selected_index)][2]
     s_width = s_rect.width
     s_height = s_rect.height
+    if orientation == "horizontal":
+        height_to_separate = s_width - height_at_sep
+    else:
+        height_to_separate = s_height - height_at_sep
     s_position = s_body.position
     s_mass = s_body.mass
     s_angle = s_body.angle
@@ -97,17 +101,17 @@ def split_rocket(height, orientation):
     #
     #
     if orientation == "horizontal":
-        new_width1 = s_width-height
+        new_width1 = s_width-height_to_separate
         new_height1 = s_height
 
-        new_width2 = 0+height
+        new_width2 = 0+height_to_separate
         new_height2 = s_height
     else:
         new_width1 = s_width
-        new_height1 = s_height - height
+        new_height1 = s_height - height_to_separate
 
         new_width2 = s_width
-        new_height2 = 0 + height
+        new_height2 = 0 + height_to_separate
 
     new_rect1 = pygame.rect.Rect((0,0), (new_width1, new_height1))
     if orientation != "horizontal":
@@ -136,10 +140,78 @@ def split_rocket(height, orientation):
     new_pos1 = s_position[0] - height_rotated1[0]/2, s_position[1] - height_rotated1[1]/2
     new_pos2 = s_position[0] + height_rotated2[0]/2, s_position[1] + height_rotated2[1]/2
 
-    create_block("rocket", new_pos1[0], new_pos1[1], new_width1, new_height1, s_mass/2, 0, s_angle, variables.selected_index, s_velocity)
-    create_block("craft_image" + str(len(variables.blocks.keys())), new_pos2[0], new_pos2[1], new_width2, new_height2, s_mass/2, 0, s_angle, -1, s_velocity)
+
+    height_cutoff = height_at_sep
+    parts_to_keep = []
+
+    parts_to_bin = []
+
+    #Calculates which parts are above the cutoff line and which parts are not
+    if orientation != "horizontal":
+        for part in parts_arr:
+            if part[2] < height_cutoff:
+                parts_to_keep.append(part)
+            else:
+                parts_to_bin.append(part)
+    else:
+        for part in parts_arr:
+            if part[1] < height_cutoff:
+                parts_to_keep.append(part)
+            else:
+                parts_to_bin.append(part)
+
+    parts_to_keep_mass = calc_mass(parts_to_keep)
+    parts_to_keep_thrust = calc_thrust(parts_to_keep)
+    parts_to_bin_mass = calc_mass(parts_to_bin)
+    parts_to_bin_thrust = calc_thrust(parts_to_bin)
+
+    create_block("rocket",
+                 new_pos1[0], new_pos1[1],
+                 new_width1, new_height1,
+                 parts_to_keep_mass, 0, s_angle, variables.selected_index, s_velocity,
+                 parts_to_keep, parts_to_keep_thrust)
+
+    create_block("craft_image" + str(len(variables.blocks.keys())),
+                 new_pos2[0], new_pos2[1],
+                 new_width2, new_height2,
+                 parts_to_bin_mass, 0, s_angle, -1, s_velocity,
+                 parts_to_bin, parts_to_bin_thrust)
     variables.space.remove(s_shape)
     variables.space.remove(s_body)
+def calc_mass(parts):
+    mass_return = 0
+    for part in parts:
+        mass_return += part[5]
+    return mass_return
+def calc_thrust(parts):
+    thrust_return = 0
+    for part in parts:
+        part_name = part[0]
+        part_data = parts_info.parts[part_name]
+        if part_data["class"] == "engine":
+            do_not_add_thrust = False
+            for part_to_check in parts:
+                #This checks if each part is:
+                #1. Below the engine
+                #2. Has the same x position as the engine
+                #3. Is not an engine itself
+                #If all these conditions are satisfied, the thrust is not added on
+                part_to_check_name = part_to_check[0]
+                part_to_check_data = parts_info.parts[part_to_check_name]
+                if (part_to_check[2] > part[2] and part_to_check[1] == part[1]) and part_to_check_data["class"] != "engine":
+                    do_not_add_thrust = True
+            if not do_not_add_thrust:
+                thrust_return += part_data["thrust"]
+    return thrust_return
+def decouple():
+    parts = variables.blocks[str(variables.selected_index)][3]
+
+    rect = variables.blocks[str(variables.selected_index)][2]
+    for o in range(len(parts)-1, -1, -1):
+        part = parts[o]
+        if part[0] == "stageseparator":
+            split_rocket(part[2], "vertical", parts)
+            break
 
 def create_joint(block1, block2):
     #new_joint = pymunk.constraints.PivotJoint(block1[1].body, block2[1].body, (block1[1].body.position+block2[1].body.position)/2)
@@ -149,7 +221,6 @@ def create_joint(block1, block2):
     #block1[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
     #block2[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
     variables.joints.append([block1, block2, block1[1].body.position - block2[1].body.position])
-    print(variables.joints)
     #variables.joints_in_space.append(new_joint)
    # variables.rot_joints.append([block1, block2])
    # variables.rot_joints_in_space.append(new_rot_joint)
@@ -161,7 +232,6 @@ def remove_joint(block1, block2):
     block1[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
     block2[1].filter = pymunk.ShapeFilter(group=variables.num_of_rockets)
     variables.joints.remove([block1, block2, block1[1].body.position - block2[1].body.position])
-    print(variables.joints)
 
 def get_save_data():
     data = []
@@ -170,7 +240,9 @@ def get_save_data():
         shape = obj[1]
         body = shape.body
         rect = obj[2]
-        data.append([image, shape.body.position.x, shape.body.position.y, rect.width, rect.height, shape.mass, shape.elasticity, body.angle, body.velocity])
+        parts_in_block = obj[3]
+        thrust=obj[4]
+        data.append([image, shape.body.position.x, shape.body.position.y, rect.width, rect.height, shape.mass, shape.elasticity, body.angle, body.velocity, parts_in_block,thrust])
     final_data = {
         "selected_index": variables.selected_index,
         "blocks": data
@@ -200,7 +272,7 @@ def load_data(data):
     sel_index = data["selected_index"]
     #Overwrites all blocks with the corresponding save file block
     for obj in objects:
-        create_block(obj[0], obj[1], obj[2], obj[3], obj[4], obj[5], obj[6], obj[7], i, obj[8])
+        create_block(obj[0], obj[1], obj[2], obj[3], obj[4], obj[5], obj[6], obj[7], i, obj[8],obj[9],obj[10])
         i += 1
     selected_index = sel_index
    # variables.trajectory, variables.trajectory_velocities = simulate_bodies(selected_obj.body.position, selected_obj.mass,
@@ -250,6 +322,8 @@ def update_rot(data):
 
             zoomer.blit_zoom_rect(rotated_image, rotated_image_rect)
 def move_selected(mode, obj):
+    thrust = variables.blocks[str(variables.selected_index)][4]
+    mass = calc_mass(variables.blocks[str(variables.selected_index)][3])
     obj.torque = 0
     if mode == "right":
         obj.torque = 9500
@@ -257,10 +331,12 @@ def move_selected(mode, obj):
         obj.torque = -9500
     if mode == "up":
         #obj.velocity += rotate_vector((0,-5), obj.angle)
-        obj.apply_force_at_local_point((0,-2000))
+        if thrust >= mass:
+            obj.apply_force_at_local_point((0,-thrust*1030))
     if mode == "down":
         obj.velocity += rotate_vector((0,5), obj.angle)
     obj = variables.blocks[str(variables.selected_index)][1]
+
     variables.orbital_corrections[str(variables.selected_index)] = [obj.body.position, obj.body.velocity, False]
     if variables.engineon:
         trajs,vels = simulate_bodies(obj.body.position, obj.mass, obj.body.velocity, obj.body.angle, obj.body.angular_velocity)
@@ -277,10 +353,11 @@ def apply_grav_accel(obj, kinematic = False, timewarp_dt = False, get_vel = Fals
     if timewarp_dt:
         pass
     force_multiplier = 1
+    mass = 34
     #grav_a = 1 * 10**5 * grav_accel(150, math.hypot(abs(obj.position.x-planet.position.x), abs(obj.position.y-planet.position.y)))
     distance_vector = ((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
     distance_ = math.hypot((planet.position.x - obj.position.x), (planet.position.y - obj.position.y))
-    grav_a = dt_use * ((6.6743015 * 10**-11) * 5000000000000000000 / (distance_ ** 2))
+    grav_a = dt_use * mass * ((6.6743015 * 10**-11) * 5000000000000000000 / (distance_ ** 2))
     grav_a_angle = math.atan2(distance_vector[1], distance_vector[0])
 
     grav_a_vector = (grav_a * math.cos(grav_a_angle), grav_a * math.sin(grav_a_angle))
@@ -314,7 +391,7 @@ def match_grav_accel(obj, obj_index):
                 print("correcting orbit")
             if distance(variables.orbital_corrections[str(obj_index)][0], obj.body.position) > 150:
                 variables.orbital_corrections[str(obj_index)][2] = True
-        apply_grav_accel(obj.body, True)
+        apply_grav_accel(obj.body, True, False, False)
 
     # variables.trajectory_follows_indexes[str(obj_index)] -> current traj follow index used in the loop
     # variables.trajectory_follows[str(obj_index)] -> current traj position to follow
@@ -354,7 +431,7 @@ def simulate_bodies(pos1, mass1, vel1, angle1, anglevel1):
     variables.simulation_active = True
     for _ in range(50):
 
-        apply_grav_accel(variables.simulation_body.body, True, True)
+        apply_grav_accel(variables.simulation_body.body, True, True, False)
         # body1.body.velocity = (0,5)
         variables.simulation_positions.append(variables.simulation_body.body.position)
         variables.simulation_velocities.append(variables.simulation_body.body.velocity)
@@ -446,7 +523,7 @@ def update_movement():
             variables.physics_speed = 15
             i = 0
         if variables.keys[pygame.K_t] and variables.keys[pygame.K_t] != variables.t_key_last_pressed:
-            split_rocket(14, "horizontal")
+            decouple()
         variables.t_key_last_pressed = variables.keys[pygame.K_t]
         if (physics_speed <= 1 and variables.keys[pygame.K_SPACE]) or variables.keys[pygame.K_1]:
             i = 0
@@ -467,7 +544,6 @@ def update_movement():
 
 def lerp_angular_velocity():
     if variables.blocks!= {}:
-
         selected_obj = variables.blocks[str(variables.selected_index)][1]
         #variables.trailPoints.append(selected_obj.body.position)
         #if len(variables.trailPoints) > 5000:
