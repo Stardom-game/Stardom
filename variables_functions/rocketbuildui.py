@@ -107,7 +107,7 @@ def launch():
         variables.parts_origin_zero = find_part_coords_origin(variables.parts)
         calc_mass()
         calc_thrust()
-        physics.create_block("rocket", 750,400,rocket_dimensions[0], rocket_dimensions[1], variables.rocket_mass, 0, 0, -1, (0,0), variables.parts_origin_zero, variables.rocket_thrust)
+        physics.create_block("rocket", 750,750,rocket_dimensions[0], rocket_dimensions[1], variables.rocket_mass, 0, 0, -1, (0,0), variables.parts_origin_zero, variables.rocket_thrust)
         original_part = None
         i = 0
         #for part in variables.parts:

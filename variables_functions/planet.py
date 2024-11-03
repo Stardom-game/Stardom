@@ -14,8 +14,10 @@ class Planet:
 
         self.rect = pygame.rect.Rect((0, 0), (radius, radius))
         self.rect.x, self.rect.y = x, y
+        self.rect_center = self.rect.center
         self.image = variables.images[image]
         self.radius = radius
     def update(self):
-        #pygame.draw.circle(variables.screen, variables.white, (self.rect.x, self.rect.y), self.radius)
-        zoomer.blit_zoom(pygame.transform.scale(self.image, (self.radius*2, self.radius*2)), (self.rect.x - self.radius, self.rect.y - self.radius))
+        pos_to_blit = (self.rect.x * variables.zoom[0]) + variables.cam_offset[0], (self.rect.y * variables.zoom[1]) + variables.cam_offset[1]
+        pygame.draw.circle(variables.screen, variables.white, pos_to_blit,self.radius * variables.zoom[0])
+        #zoomer.blit_zoom(pygame.transform.scale(self.image, (self.radius*2, self.radius*2)), (self.rect.x - self.radius, self.rect.y - self.radius))
