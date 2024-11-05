@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhjjg3m3mrlcm"]
+
+[ext_resource type="Script" path="res://vehicle_assembly.gd" id="1_wkexu"]
+
+[node name="Control" type="Control" node_paths=PackedStringArray("launch_button")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wkexu")
+launch_button = NodePath("Button")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 796.0
+offset_top = 391.0
+offset_right = 1015.0
+offset_bottom = 493.0
+text = "Launch"
+
+[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]

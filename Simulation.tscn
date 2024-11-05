@@ -24,3 +24,5 @@ shape = SubResource("CircleShape2D_ah4ja")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.1, 0.1)
+
+[node name="CraftParent" type="Node" parent="."]
