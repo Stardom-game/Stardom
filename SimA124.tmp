@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://d1vkime854p3e"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_que8e"]
+[ext_resource type="PackedScene" uid="uid://0yq0s03vg0xh" path="res://craft/Craft.tscn" id="2_rrgqq"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wqc5l"]
+rough = true
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ah4ja"]
+radius = 258.002
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_que8e")
+craft = ExtResource("2_rrgqq")
+
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_wqc5l")
+sleeping = true
+lock_rotation = true
+freeze = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+shape = SubResource("CircleShape2D_ah4ja")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.5, 0.5)

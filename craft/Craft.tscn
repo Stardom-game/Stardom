@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://0yq0s03vg0xh"]
+
+[ext_resource type="Script" path="res://craft/craft.gd" id="1_4b6ay"]
+[ext_resource type="Script" path="res://craft/calculate_grav_velocity.gd" id="2_si6rw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p0mhq"]
+size = Vector2(104, 70)
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+slide_on_ceiling = false
+platform_floor_layers = 4294967041
+script = ExtResource("1_4b6ay")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_p0mhq")
+
+[node name="GravAccelCalculator" type="Line2D" parent="."]
+script = ExtResource("2_si6rw")
